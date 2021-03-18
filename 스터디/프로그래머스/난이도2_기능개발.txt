@@ -1,0 +1,30 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(int[] progresses, int[] speeds) {
+        int N = progresses.length;
+        Queue<Integer> q = new LinkedList<Integer>();
+        for(int i=0; i<N; i++){
+            if((100-progresses[i])% speeds[i] == 0) q.add((100-progresses[i]) / speeds[i]);
+            else q.add((100-progresses[i]) / speeds[i] + 1);
+        }
+        ArrayList<Integer> cnt_list = new ArrayList<Integer>();
+        while(!q.isEmpty()){
+            int cnt = 1;
+            int tmp = q.poll();
+            for(int day : q){
+                if(day<= tmp) cnt++;
+                else break;
+            }//end for.
+            cnt_list.add(cnt);
+            for(int i=0; i<cnt-1; i++){
+                q.poll();
+            }//end poll.
+        }
+        int[] answer = new int[cnt_list.size()];
+        for(int i=0; i<cnt_list.size(); i++){
+            answer[i] = cnt_list.get(i);
+        }
+        return answer;
+    }//end main.
+}//end solution.
