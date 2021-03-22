@@ -1,0 +1,54 @@
+import java.util.*;
+import java.awt.*;
+
+class Solution {
+    static int N;
+    static int M;
+    static boolean[][] visited;
+    static int[][] direction = {{-1,0}, {1,0} , {0,-1} , {0,1}};
+    
+    public int[] solution(int m, int n, int[][] picture) {
+        N = m;
+        M = n;
+        visited = new boolean[N][M];
+        int numberOfArea = 0;
+        int maxSizeOfOneArea  = 0;
+        for(int i=0; i<N; i++){
+            for(int j=0; j<M; j++){
+                if(!visited[i][j] && picture[i][j] != 0){
+                    numberOfArea++;
+                    int tmp = bfs(new Point(i,j) , picture);
+                    maxSizeOfOneArea = maxSizeOfOneArea < tmp ? tmp : maxSizeOfOneArea;
+                }
+            }
+        }
+        
+        int[] answer = new int[2];
+        answer[0] = numberOfArea;
+        answer[1] = maxSizeOfOneArea;
+        return answer;
+    }//end main.
+    private static int bfs(Point p , int[][] picture){
+        int cnt = 0;
+        int color = picture[p.x][p.y];
+        Queue<Point> q = new LinkedList<Point>();
+        q.offer(p);
+        visited[p.x][p.y] = true;
+        while(!q.isEmpty()){
+            int size = q.size();
+            cnt += size;
+            for(int i=0; i<size; i++){
+                Point now = q.poll();
+                for(int k=0; k<4; k++){
+                    int nx = now.x + direction[k][0];
+                    int ny = now.y + direction[k][1];
+                    if(nx >=0 && nx<N && ny>=0 && ny<M && !visited[nx][ny] && picture[nx][ny] == color){
+                        visited[nx][ny] = true;
+                        q.offer(new Point(nx,ny));
+                    }
+                }
+            }
+        }//end while.
+        return cnt;
+    }//end bfs.
+}//end class.
