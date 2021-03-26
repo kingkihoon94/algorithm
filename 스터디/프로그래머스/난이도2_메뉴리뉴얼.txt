@@ -1,0 +1,59 @@
+import java.util.*;
+
+class Solution {
+    static HashMap<String, Integer> hashmap = new HashMap<String, Integer>();
+    
+    public String[] solution(String[] orders, int[] course) {
+        for(String s : orders){
+            char[] StringtoChar = s.toCharArray();
+            Arrays.sort(StringtoChar);
+            String sort_s = "";
+            for (int i = 0; i < StringtoChar.length; i++) {
+                sort_s += StringtoChar[i];
+            }
+            for(int length : course){
+                int s_length = s.length();
+                comb(sort_s , s_length , length , "", 0 , 0);
+            }
+        }
+        ArrayList<String> tmp_answer = new ArrayList<String>();
+        int[] length_max = {};
+        Object[] key_list = hashmap.keySet().toArray();
+		Arrays.sort(key_list);
+        for(int length : course){
+            int max_cnt = 0;
+            ArrayList<String> answer_list = new ArrayList<String>();
+            for(int i=0; i<key_list.length; i++){
+                String tmp = (String)key_list[i];
+                if(hashmap.get(tmp) >=2 && tmp.length() == length){
+                    if(hashmap.get(tmp) > max_cnt){
+                        answer_list = new ArrayList<String>();
+                        answer_list.add(tmp);
+                        max_cnt = hashmap.get(tmp);
+                    }
+                    else if(hashmap.get(tmp) == max_cnt) answer_list.add(tmp);
+                }
+            }
+            for(int i=0; i<answer_list.size(); i++){
+                tmp_answer.add(answer_list.get(i));
+            }
+        }
+        Collections.sort(tmp_answer);
+        String[] answer = new String[tmp_answer.size()];
+        for(int i=0; i<tmp_answer.size(); i++){
+            answer[i] = tmp_answer.get(i);
+        }
+        return answer;
+    }//end main.
+    
+    private static void comb(String s , int s_length, int length , String tmp, int cnt , int idx){
+        if(cnt == length){
+            if(hashmap.containsKey(tmp)) hashmap.put(tmp , hashmap.get(tmp)+1);
+            else hashmap.put(tmp , 1);
+            return;
+        }
+        for(int i=idx; i<s_length; i++){
+            comb(s, s_length, length, tmp+s.charAt(i) , cnt+1 , i+1);
+        }
+    }//end comb.
+}//end solution.
