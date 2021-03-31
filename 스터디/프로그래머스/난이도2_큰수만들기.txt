@@ -1,0 +1,28 @@
+class Solution {
+    public String solution(String number, int k) {
+        StringBuilder sb = new StringBuilder();
+        int idx = 0;
+        
+        while(k>=0 && idx+k<number.length()){
+            if(k==0){
+                for(int i=idx; i<number.length(); i++){
+                    sb.append(number.charAt(i));
+                }
+                break;
+            }
+            char max_num = '0';
+            int max_idx = idx;
+            for(int i=idx; i<=idx+k; i++){
+                if(max_num < number.charAt(i)){
+                    max_num = number.charAt(i);
+                    max_idx = i;
+                    if(max_num == '9') break;
+                }
+            }
+            sb.append(number.charAt(max_idx));
+            k -= max_idx - idx;
+            idx = max_idx + 1;
+        }
+        return sb.toString();
+    }//end main.
+}//end solution.
