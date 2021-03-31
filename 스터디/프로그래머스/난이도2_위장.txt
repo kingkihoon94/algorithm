@@ -1,0 +1,22 @@
+import java.util.*;
+
+class Solution {
+    public int solution(String[][] clothes) {
+        HashMap<String, Integer> hashmap = new HashMap<String, Integer>();
+        for(String[] tmp : clothes){
+            if(hashmap.containsKey(tmp[1])){
+                hashmap.put(tmp[1] , hashmap.get(tmp[1])+1);
+            }
+            else hashmap.put(tmp[1] , 1);
+        }
+        
+        int answer = 1;
+        
+        for(String key : hashmap.keySet() ) {
+            answer *= hashmap.get(key)+1;
+        }
+        
+        answer--; //다 안입는경우를 뺀다.
+        return answer;
+    }//end main.
+}//end solution.
