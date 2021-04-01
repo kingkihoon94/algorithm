@@ -1,0 +1,56 @@
+import java.util.*;
+
+class Solution {
+    static class Pos{
+        int sx;
+        int sy;
+        int sl;
+        public Pos(int sx, int sy, int sl){
+            this.sx = sx;
+            this.sy = sy;
+            this.sl = sl;
+        }
+    }//class Pos.
+    
+    public int[] solution(int[][] arr) {
+        int length = arr.length;
+        int[] answer = new int[2];
+        for(int i=0; i<length; i++){
+            for(int j=0; j<length; j++){
+                if(arr[i][j] ==0) answer[0]++;
+                else answer[1]++;
+            }
+        }//end initialize total zero / one.
+        
+        Queue<Pos> q = new LinkedList<Pos>();
+        q.offer(new Pos(0,0,length));
+        while(!q.isEmpty()){
+            Pos p = q.poll();
+            int sx = p.sx;
+            int sy = p.sy;
+            int sl = p.sl;
+            int num = arr[sx][sy];
+            boolean flag = true;
+ex:         for(int i=sx; i<sx+sl; i++){
+                for(int j=sy; j<sy+sl; j++){
+                    if(arr[i][j] != num){
+                        flag = false;
+                        break ex;
+                    }
+                }//end for
+            }//end for.
+            if(flag) answer[num] -= (sl * sl) - 1;
+            else{
+                if(sl != 2){
+                    int nl = sl/2;
+                    q.offer(new Pos(sx,sy,nl));
+                    q.offer(new Pos(sx+nl,sy,nl));
+                    q.offer(new Pos(sx,sy+nl,nl));
+                    q.offer(new Pos(sx+nl,sy+nl,nl));
+                }
+            }
+        }//end bfs.
+        
+        return answer;
+    }//end main.
+}//end solution.
