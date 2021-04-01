@@ -1,0 +1,55 @@
+import java.util.*;
+
+class Solution {
+    static HashMap<Character, Integer> hashmap = new HashMap<Character, Integer>();
+    static String[] data_list;
+    static int[] list = new int[8];
+    static boolean[] visited = new boolean[8];
+    static int answer = 0;
+    public int solution(int n, String[] data) {
+        data_list = data;
+        hashmap.put('A',0);
+        hashmap.put('C',1);
+        hashmap.put('F',2);
+        hashmap.put('J',3);
+        hashmap.put('M',4);
+        hashmap.put('N',5);
+        hashmap.put('R',6);
+        hashmap.put('T',7);
+        dfs(0);
+        return answer;
+    }//end main.
+    
+    public static void dfs(int cnt){
+        if(cnt == 8){
+            if(check()) answer++;
+            return ;
+        }
+        for(int i=0; i<8; i++){
+            if(!visited[i]){
+                visited[i]= true;
+                list[cnt] = i; //cnt = 자리위치 , i = 캐릭터들이 가지고있는 value.
+                dfs(cnt+1);
+                visited[i]= false;
+            }
+        }//end for.
+    }//end dfs.
+    public static boolean check(){
+        for(String s : data_list){
+            int seat1 = list[hashmap.get(s.charAt(0))];
+            int seat2 = list[hashmap.get(s.charAt(2))];
+            char operator = s.charAt(3);
+            int distance = s.charAt(4) - '0' + 1; //0이 거리가 1임을 의미.
+            if(operator == '='){
+                if(Math.abs(seat1-seat2) != distance) return false;
+            }
+            else if(operator == '>'){
+                if(Math.abs(seat1-seat2) <= distance) return false;
+            }
+            else{
+                if(Math.abs(seat1-seat2) >= distance) return false;
+            }
+        }//end for.
+        return true;
+    }//end check.
+}//end solution.
