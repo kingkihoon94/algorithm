@@ -1,0 +1,22 @@
+class Solution {
+    public int[] solution(int brown, int yellow) {
+        int total = brown + yellow;
+        int row = 1;
+        int[] answer = new int[2];
+        while(row <= total/2){
+            if(total%row == 0){
+                int col = total/row;
+                if(col >= row){
+                    int tmp = (col-2) * (row-2);
+                    if(tmp == yellow){
+                        answer[0] = col;
+                        answer[1] = row;
+                        break;
+                    }
+                }
+            }
+            row++;
+        }
+        return answer;
+    }//end main.
+}//end solution.
