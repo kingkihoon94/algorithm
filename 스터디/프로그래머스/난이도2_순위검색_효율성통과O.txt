@@ -1,0 +1,62 @@
+import java.util.*;
+
+class Solution {
+    static HashMap<String, List<Integer>> hashmap = new HashMap<String, List<Integer>>();
+    static int[] answer;
+    public int[] solution(String[] info, String[] query) {
+        getInfo(info);
+        //1차적인목표 : info[i] 의 정보를 통해 모든 경우의 수를 Hashmap으로 저장한다.
+        answer = new int[query.length];
+        getQuery(query);
+        //2차적인목표 : query[i] 의 정보를 통해 쿼리문을 만들고 Hashmap으로 비교하여 Score를 비교한다.
+        return answer;
+    }//end main.
+    private void getInfo(String[] info){
+        for(String s : info){
+            String[] info_list = s.split(" ");
+            dfs("", 0, info_list);
+        }//end for.
+        for(String key : hashmap.keySet()){
+            List<Integer> list = hashmap.get(key);
+            Collections.sort(list);
+        }//정렬완료.
+    }//end getInfo.
+    private void dfs(String s , int cnt, String[] info_list){
+        if(cnt == 4){
+            if(hashmap.containsKey(s)){
+                hashmap.get(s).add(Integer.parseInt(info_list[4]));
+            }
+            else{
+                List<Integer> score_list=new ArrayList<>();
+                score_list.add(Integer.parseInt(info_list[4]));
+                hashmap.put(s, score_list);
+            }
+            return ;
+        }
+        dfs(s+"-", cnt+1 , info_list); // - 를 포함하여 String 생성.
+        dfs(s+info_list[cnt], cnt+1, info_list);// 해당 문자열 포함하여 String 생성.
+    }//end dfs.
+    private void getQuery(String[] query){
+        for(int i=0; i<query.length; i++){
+            String query_sentence = "";
+            String[] query_list = query[i].split(" ");
+            for(int idx=0; idx< query_list.length -1; idx++){
+                if(query_list[idx].equals("and")) continue;
+                query_sentence += query_list[idx];
+            }
+            answer[i] = findMember(query_sentence, Integer.parseInt(query_list[query_list.length-1]));
+        }//end for.
+    }//end getQuery.
+    private int findMember(String sentence, int score){
+        if(hashmap.containsKey(sentence) == false) return 0;
+        List<Integer> list = hashmap.get(sentence);
+        int left = 0;
+        int right = list.size()-1;
+        while(left<=right){
+            int mid = (left+right)/2;
+            if(list.get(mid) < score) left = mid+1;
+            else right = mid-1;
+        }//end while.
+        return list.size() - left;
+    }//end findMember.
+}//end solution.
