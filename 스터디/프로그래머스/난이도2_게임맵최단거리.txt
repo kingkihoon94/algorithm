@@ -1,0 +1,35 @@
+import java.util.*;
+import java.awt.*;
+
+class Solution {
+    public int solution(int[][] maps) {
+        int[][] direction = {{-1,0},{1,0},{0,-1},{0,1}};
+        int n = maps.length;
+        int m = maps[0].length;
+        int time = 1;
+        boolean[][] visited = new boolean[n][m];
+        visited[0][0] = true;
+        Queue<Point> q = new LinkedList<Point>();
+        q.offer(new Point(0,0));
+ex:     while(!q.isEmpty()){
+            int size = q.size();
+            for(int i=0; i<size; i++){
+                Point p = q.poll();
+                int dx = p.x;
+                int dy = p.y;
+                if(dx == n-1 && dy == m-1) break ex;
+                for(int k=0; k<4; k++){
+                    int nx = dx + direction[k][0];
+                    int ny = dy + direction[k][1];
+                    if(nx>=0 && nx<n && ny>=0 && ny<m && maps[nx][ny] == 1 && !visited[nx][ny]){
+                        visited[nx][ny] = true;
+                        q.offer(new Point(nx,ny));
+                    }
+                }//4방탐색.
+            }
+            time++;
+        }//end bfs.
+        if(visited[n-1][m-1]) return time;
+        else return -1;
+    }//end main.
+}//end solution.
