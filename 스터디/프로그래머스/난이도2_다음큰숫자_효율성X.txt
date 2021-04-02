@@ -1,0 +1,41 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int n) {
+        String s = "";
+        int cnt = 0;
+        int start_idx = -1;
+        int end_idx = -1;
+        
+        while(n>0){
+            int binary = n%2;
+            if(start_idx == -1 && binary == 1) start_idx = cnt;
+            if(start_idx != -1 && end_idx == -1 && binary == 0) end_idx = cnt;
+            s = binary + s;
+            n /= 2;
+            cnt++;
+        }//10진수 2진수 변환.
+        
+        if(end_idx == -1) {
+            end_idx = cnt;
+            s = "0" + s;
+            cnt++;
+        }
+        int left = cnt-end_idx-1;
+        int right = s.length() - left - 1;
+        int remain = end_idx-start_idx-1;
+        
+        String next_num = s.substring(0,left);
+        next_num += "1"; //초기세팅.
+        for(int i=0; i<right; i++){
+            next_num += "0";
+        }
+        int plus = (int)(Math.pow(2,remain) - 1); 
+        int answer = 0;
+        for(int i=0; i<next_num.length(); i++){
+            if(next_num.charAt(next_num.length()-i-1) == '1') answer += (int)Math.pow(2,i);
+        }//2진수 10진수 변환.
+        
+        return answer + plus;
+    }//end main.
+}//end solution.
