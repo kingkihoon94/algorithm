@@ -1,0 +1,23 @@
+class Solution {
+    int solution(int[][] land) {
+        int row = land.length;
+        int col = land[0].length;
+        
+        for(int i=1; i<row; i++){
+            for(int j=0; j<4; j++){
+                int tmp = 0;
+                for(int k=0; k<4; k++){
+                    if(j==k) continue;
+                    tmp = Math.max(land[i-1][k] , tmp);
+                }//end for2.
+                land[i][j] += tmp;
+            }//end for2.
+        }//end for1.
+        
+        int answer = 0;
+        for(int i=0; i<land[0].length; i++){
+            answer = answer < land[row-1][i] ? land[row-1][i] : answer;
+        }//맨 밑 행 가장 큰 값 구하기.
+        return answer;
+    }//end main.
+}//end solution.
