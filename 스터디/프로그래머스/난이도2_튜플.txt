@@ -1,0 +1,45 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(String s) {
+        s = s.substring(2, s.length()-2);
+        s = s.replace("},{", " ");
+        String[] tuple_list = s.split(" ");
+        int length = tuple_list.length;
+        ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+        for(int i=0; i<length; i++){
+            list.add(new ArrayList<String>());
+        }
+        for(String tuple : tuple_list){
+            String[] num_list = tuple.split(",");
+            int idx = num_list.length - 1;
+            for(String num : num_list){
+                list.get(idx).add(num);
+            }
+        }
+        ArrayList<String> answer_list = new ArrayList<String>();
+        answer_list.add(list.get(0).get(0));
+        for(int i=1; i<list.size(); i++){
+            for(int j=0; j<list.get(i).size(); j++){
+                String tmp = list.get(i).get(j);
+                boolean find = true;
+                for(int k=0; k<answer_list.size(); k++){
+                    if(tmp.equals(answer_list.get(k))){
+                        find = false;
+                        break;
+                    }
+                }//end for3.
+                if(!find) continue;
+                else {
+                    answer_list.add(tmp);
+                    break;
+                }//찾은경우 answer_list에 저장 후 다음단계 진행.
+            }//end for2.
+        }//end for1.
+        int[] answer = new int[answer_list.size()];
+        for(int i=0; i<answer_list.size(); i++){
+            answer[i] = Integer.parseInt(answer_list.get(i));
+        }
+        return answer;
+    }//end main.
+}//end solution.
