@@ -1,0 +1,24 @@
+class Solution {
+    public String solution(String s) {
+        String[] string_list = s.split(" ");
+        boolean selected = false;
+        int min = 0;
+        int max = 0;
+        for(String num : string_list){
+            int tmp = Integer.parseInt(num);
+            if(!selected){
+                selected = true;
+                min = tmp;
+                max = tmp;
+            }
+            else{
+                min = min > tmp ? tmp : min;
+                max = max < tmp ? tmp : max;
+            }
+        }//end for.
+        String answer = "";
+        answer = min + answer;
+        answer = answer + " " + max;
+        return answer;
+    }//end main.
+}//end solution.
