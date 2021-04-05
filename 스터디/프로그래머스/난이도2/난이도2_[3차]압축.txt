@@ -1,0 +1,42 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(String msg) {
+        HashMap<String, Integer> dictionary = new HashMap<String, Integer>();
+        ArrayList<Integer> answer_list = new ArrayList<Integer>();
+        
+        int cnt = 0;
+        boolean flag = false;
+        
+        for(int i=0; i<26; i++){
+            String tmp = "";
+            tmp += (char)('A' + i);
+            dictionary.put(tmp, ++cnt);
+        }
+        
+        for(int i=0 ; i<msg.length(); i++) {
+            String dict = msg.charAt(i) + "";
+            while(dictionary.containsKey(dict)){
+                i++;
+                if(i == msg.length()){
+                    flag = true;
+                    break;
+                }
+                dict += msg.charAt(i);
+            }//end while.
+            if(flag) answer_list.add(dictionary.get(dict));
+            else{
+                answer_list.add(dictionary.get(dict.substring(0,dict.length()-1)));
+                dictionary.put(dict, ++cnt);
+                i--;
+            }
+        }//end for.
+        
+        int[] answer = new int[answer_list.size()];
+        for(int i=0; i<answer_list.size(); i++){
+            answer[i] = answer_list.get(i);
+        }//end for.
+        
+        return answer;
+    }//end main.
+}//end solution.
