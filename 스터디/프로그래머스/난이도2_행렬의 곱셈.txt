@@ -1,0 +1,18 @@
+class Solution {
+    public int[][] solution(int[][] arr1, int[][] arr2) {
+        int left_row = arr1.length;
+        int left_col = arr1[0].length;
+        int right_row = arr2.length;
+        int right_col = arr2[0].length;
+        
+        int[][] answer = new int[left_row][right_col]; //곱셈 후 배열의 크기.
+        for(int i=0; i<left_row; i++){
+            for(int j=0; j<right_col; j++){
+                for(int k=0; k<left_col; k++){
+                    answer[i][j] += arr1[i][k] * arr2[k][j];
+                }
+            }
+        }
+        return answer;
+    }//end main.
+}//end solution.
