@@ -1,0 +1,35 @@
+class Solution {
+    static String[][] replace = {{"C#" , "c"} , {"D#" , "d"}, {"F#" , "f"}, {"G#" , "g"}, {"A#" , "a"}};
+    
+    public String solution(String m, String[] musicinfos) {
+        for(int i=0; i<5; i++){
+            m = m.replaceAll(replace[i][0], replace[i][1]);
+        }// # 조건 처리. ("대문자#" 을 소문자로 치환)
+        
+        String answer = "(None)";
+        int max_time = 0;
+        
+        for(String music : musicinfos){
+            String[] playlist = music.split(",");
+            int start_time = Integer.parseInt(playlist[0].split(":")[0]) * 60 + Integer.parseInt(playlist[0].split(":")[1]);
+            int end_time = Integer.parseInt(playlist[1].split(":")[0]) * 60 + Integer.parseInt(playlist[1].split(":")[1]);
+            int play_time = end_time - start_time;
+            for(int i=0; i<5; i++){
+                playlist[3] = playlist[3].replaceAll(replace[i][0], replace[i][1]);
+            }// # 조건 처리. ("대문자#" 을 소문자로 치환)
+            int time = 0;
+            String melody = "";
+            while(time < play_time){
+                melody += playlist[3].charAt((time)%playlist[3].length());
+                time++;
+            }
+            if(melody.contains(m)){
+                if(max_time < play_time){
+                    max_time = play_time;
+                    answer = playlist[2];
+                }
+            }
+        }//end for.
+        return answer;
+    }//end main.
+}//end solution.
