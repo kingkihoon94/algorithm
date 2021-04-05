@@ -1,0 +1,54 @@
+class Solution {
+    static int old_idx = -1;
+    static int[] cache_lru;
+    static String[] cache;
+    static int size;
+    public int solution(int cacheSize, String[] cities) {
+        size = cacheSize;
+        cache = new String[size];
+        cache_lru = new int[size];
+        
+        int answer = 0;
+        for(String city : cities){
+            update();
+            city = city.toLowerCase();
+            int find_idx = find_cache(city);
+            if(find_idx != -1){
+                answer++;
+                cache_lru[find_idx] = 0;
+            }
+            else{
+                answer+=5;
+                replace(city);
+            }
+        }//end for.
+        
+        return answer;
+    }//end main.
+    
+    private int find_cache(String city){
+        for(int i=0; i<size; i++){
+            if(cache[i] == null) continue;
+            else if(cache[i].equals(city)) return i;
+        }
+        return -1;
+    }//end find_cache.
+    
+    private void replace(String city){
+        if(old_idx == -1) return;
+        cache[old_idx] = city;
+        cache_lru[old_idx] = 0;
+    }//end replace.
+    
+    private void update(){
+        int max_lru = 0;
+        for(int i=0; i<size; i++){
+            cache_lru[i]++;
+            if(cache_lru[i] > max_lru){
+                max_lru = cache_lru[i];
+                old_idx = i;
+            }
+        }
+    }//end update.
+    
+}//end solution.
