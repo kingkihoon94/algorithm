@@ -1,0 +1,45 @@
+import java.util.*;
+
+class Solution {
+    static ArrayList<Integer> key_list = new ArrayList<Integer>();
+    static String[][] db;
+    static int row;
+    static int col;
+    
+    public int solution(String[][] relation) {
+        db = relation;
+        row = relation.length;
+        col = relation[0].length;
+        for(int i=1; i< (1<<col) ; i++){
+            if(can_candidate(i)){
+                if(can_check(i)){
+                    key_list.add(i);
+                }
+            }
+        }
+        return key_list.size();
+    }//end main.
+    private boolean can_candidate(int num){
+        for(int key : key_list){
+            int contain = key & num;
+            if(contain == key) return false; // & 연산으로 겹치는 부분이 이전 key와 같다면 후보키 X.
+        }
+        return true;
+    }//end can_candidate.
+    
+	private boolean can_check(int num){
+	    HashMap<String , Integer> hashmap = new HashMap<String, Integer>();
+		for(int i = 0 ; i < row ; i++) {
+			String tmp = "";
+			for(int j = 0 ; j < col ; j++) {
+				if((num & (1 << j)) != 0) {
+					tmp += db[i][j];
+				}
+			}
+			if(hashmap.containsKey(tmp)) return false;
+            else hashmap.put(tmp, 0);
+		}
+		return true;
+	}//end check.
+    
+}//end solution.
