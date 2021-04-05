@@ -1,0 +1,14 @@
+class Solution {
+    static int divide = 1234567;
+    static int[] memo = new int[100001];
+    public int solution(int n) {
+        int answer = Fibo(n);
+        return answer;
+    }//end main.
+    private int Fibo(int n){
+        if(n==0) return 0;
+        if(n==1) return 1;
+        if(memo[n] !=0) return memo[n];
+        return memo[n] = (Fibo(n-1) + Fibo(n-2)) % divide;
+    }//Fibo -- memoization적용.
+}//end solution.
