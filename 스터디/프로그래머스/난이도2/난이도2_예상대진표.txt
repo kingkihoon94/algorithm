@@ -1,0 +1,16 @@
+class Solution{
+    public int solution(int n, int a, int b){
+        int answer = 1;
+        int left = a < b ? a : b;
+        int right = a > b ? a : b;
+        
+        while(true){
+            if(left % 2 == 1 && right - left == 1) break; //왼쪽이 홀수여야 만나는것.
+            left = (left + 1) / 2;
+            right = (right + 1) / 2;
+            answer++;
+        }//end while.
+        
+        return answer;
+    }//end main.
+}//end solution.
