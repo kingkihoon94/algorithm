@@ -1,0 +1,24 @@
+class Solution {
+    public int solution(int[] arr) {
+        int lcm = arr[0];
+        for(int i=1; i<arr.length; i++){
+            lcm = LCM(lcm,arr[i]);
+        }//end for.
+        return lcm;
+    }//end main.
+    private int LCM(int num1, int num2){
+        int gcd = 0;
+        if(num1 < num2) gcd = GCD(num1,num2);
+        else gcd = GCD(num2,num1);
+        return gcd * (num1/gcd) * (num2/gcd);
+    }//end LCM.
+    
+    private int GCD(int num1, int num2){
+        while(num2 != 0){
+            int tmp = num1 % num2;
+            num1 = num2;
+            num2 = tmp;
+        }//end while.
+        return num1;
+    }//end GCD.
+}//end class.
