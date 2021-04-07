@@ -1,0 +1,27 @@
+class Solution {
+    public String solution(int n, int t, int m, int p) {
+        String list = "0";
+        int number = 1;
+        int max = p + m*(t-1);
+        
+        while(list.length()<max){
+            list += conv(number, n);
+            number++;
+        }//end while.
+        
+        String answer = "";
+        for(int i=0; i<t; i++){
+            answer += list.charAt(m*i + p-1);
+        }//end for.
+        return answer;
+    }//end main.
+    private String conv(int number, int n){
+        String tmp = "";
+        while(number >= 1){
+            if(number%n >= 10) tmp = (char)('A' - 10 + (number%n)) + tmp;
+            else tmp = number%n + tmp;
+            number/= n;
+        }
+        return tmp;
+    }//end conv.
+}//end class
