@@ -1,0 +1,16 @@
+class Solution {
+    public String solution(String s) {
+        s = s.toLowerCase();
+        char[] list = s.toCharArray();
+        
+        String answer = "";
+        answer += Character.toUpperCase(list[0]);
+        for(int i=1; i<list.length; i++){
+            if(list[i] == ' ') answer += " ";
+            else if(list[i-1] == ' ') answer+= Character.toUpperCase(list[i]);
+            else answer += list[i];
+        }
+        return answer;
+        //인풋에 공백이 하나만 주어지지는 않음..
+    }//end main.
+}//end class.
