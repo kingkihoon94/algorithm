@@ -1,0 +1,52 @@
+import java.util.*;
+
+class Solution {
+    
+    public String solution(String play_time, String adv_time, String[] logs) {
+        int p_time = STI(play_time.split(":"));
+        int a_time = STI(adv_time.split(":"));
+        long[] cnt_list = new long[p_time+1]; //값은 최대 30만 * 36만(초) int넘어감.
+        
+        for (String log : logs) {
+            String[] tmp_log = log.split("-");
+            cnt_list[STI(tmp_log[0].split(":"))]++;
+            cnt_list[STI(tmp_log[1].split(":"))]--;
+            //시작점 끝점 표시. -->여기서 for문을 돌려버리면 시간초과가 나서 시작점 끝점 표시만하고 나중에 한번에 돌리는걸로 통과.
+        }//end for.
+        for(int i=1; i<=p_time; i++) cnt_list[i] += cnt_list[i-1];
+        //해당 초 별 시청자 수 구하기.
+        for(int i=1; i<=p_time; i++) cnt_list[i] += cnt_list[i-1];
+        //초마다 누적된 시청시간.
+        
+        int now = 0;
+        int s_time = 0;
+        long max = cnt_list[a_time]; //0초에 광고튼 기본값.
+        
+        while(now + a_time <= p_time){
+            long time = cnt_list[now + a_time] - cnt_list[now];
+            if(time > max) {
+                max = time;
+                s_time = now+1;
+            }//같으면 빠른 시각
+            now++;
+        }//end while.
+        
+        return ITS(s_time);
+    }//end main.
+    
+    private int STI(String[] time){
+        int h = Integer.parseInt(time[0]);
+        int m = Integer.parseInt(time[1]);
+        int s = Integer.parseInt(time[2]);
+        return h * 3600 + m * 60 + s;
+    }//end STI.
+    
+    private String ITS(int time){
+        int h = time/3600;
+        int m = (time%3600)/60;
+        int s = (time%3600)%60;
+        
+        return String.format("%02d:%02d:%02d" , h,m,s);
+    }//end ITS.
+    
+}//end solution.
