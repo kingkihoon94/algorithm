@@ -1,0 +1,34 @@
+import java.util.*;
+
+class Solution {
+    static int SIMILARITY = 65536;
+    
+    public int solution(String str1, String str2) {
+        ArrayList<String> list1 = conv(str1);
+        ArrayList<String> list2 = conv(str2);
+        ArrayList<String> union = new ArrayList<String>();
+        ArrayList<String> inter = new ArrayList<String>();
+        for(String s : list1){
+            if(list2.remove(s)) inter.add(s);
+            union.add(s);
+        }//end for.
+        for(String s : list2){
+            union.add(s);
+        }
+        if(union.size() == 0) return 1 * SIMILARITY ;
+        else return (int)((float)(inter.size()) / (union.size()) * SIMILARITY);
+    }//end main.
+    
+    private ArrayList<String> conv(String s){
+        s = s.toLowerCase();
+        ArrayList<String> list = new ArrayList<String>();
+        for(int i=1; i<s.length(); i++){
+            if(s.charAt(i-1) >= 'a' && s.charAt(i-1) <= 'z' && s.charAt(i) >= 'a' && s.charAt(i) <= 'z'){
+                String tmp = "" + s.charAt(i-1) + s.charAt(i);
+                list.add(tmp);
+            }
+        }//end for.
+        return list;
+    }//end conv.
+    
+}//end solution.
