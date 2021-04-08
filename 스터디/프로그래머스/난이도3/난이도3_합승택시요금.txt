@@ -1,0 +1,31 @@
+class Solution {
+    public int solution(int n, int s, int a, int b, int[][] fares) {
+        int[][] floyd = new int[n+1][n+1];
+        for(int i=1; i<=n; i++){
+            for(int j=1; j<=n; j++){
+                if(i == j) floyd[i][j] = 0;
+                else floyd[i][j] = 20000001;
+            }//end for.
+        }//end for.
+        for(int i=0; i<fares.length; i++){
+            int start = fares[i][0];
+            int end = fares[i][1];
+            int fare = fares[i][2];
+            floyd[start][end] = fare;
+            floyd[end][start] = fare;
+        }//end for.
+        for(int k=1; k<=n; k++){
+            for(int i=1; i<=n; i++){
+                for(int j=1; j<=n; j++){
+                    floyd[i][j] = floyd[i][j] > floyd[i][k] + floyd[k][j] ? floyd[i][k] + floyd[k][j] : floyd[i][j];
+                }//end for3.
+            }//end for2.
+        }//end for1.
+        int answer = 40000001; // 200 * 100000 * (갈라지면 2번) + 1
+        
+        for(int i=1; i<=n; i++){
+            answer = answer > floyd[s][i] + floyd[i][a] + floyd[i][b] ? floyd[s][i] + floyd[i][a] + floyd[i][b] : answer;
+        }
+        return answer;
+    }//end main.
+}//end solution.
