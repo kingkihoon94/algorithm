@@ -1,0 +1,53 @@
+class Solution {
+    public String solution(int n, int t, int m, String[] timetable) {
+        int[] time = new int[1450]; //크게 할당.
+        int[] cnt = new int[1450];
+        boolean[] bus = new boolean[1450];
+        
+        int start = STI("09:00");
+        
+        for(int i=0; i<n-1; i++){
+            int bus_time = start + i * t;
+            time[bus_time] -= m;
+            bus[bus_time] = true;
+        }//해당 시간에 버스로 인해 감소하는만큼 기록.
+        
+        for(String crew : timetable){
+            int crew_time = STI(crew);
+            time[crew_time]++;
+            cnt[crew_time]++;
+        }//해당 시간에 크루 처리.
+        
+        int limit = start + (n-1) * t; //마지막 셔틀.
+        for(int i=1; i<=limit; i++){
+            time[i] += time[i-1];
+            if(time[i] < 0) time[i] = 0; //스택다 뺼수있을만큼이었으면 0으로 진행.
+        }//해당 시간 별로 이용객 스택 표현.
+        
+        int now = 0;
+        int answer = 0;
+        
+        while(now <= limit){
+            if(time[now] < m) answer = now;
+            else if(bus[now] && time[now-1] - m < m) answer = now-1;
+            now++;
+        }//end while.
+        
+        return ITS(answer);
+    }//end main.
+    
+    private int STI(String s){
+        String[] time_split = s.split(":");
+        int h = Integer.parseInt(time_split[0]);
+        int m = Integer.parseInt(time_split[1]);
+        return h * 60 + m;
+    }//end STI.
+    
+    private String ITS(int time){
+        String tmp = "";
+        int h = time/60;
+        int m = time%60;
+        return String.format("%02d:%02d" , h , m);
+    }//end ITS.
+    
+}//end solution.
