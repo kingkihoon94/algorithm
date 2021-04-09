@@ -17,24 +17,23 @@ class Solution {
         
         int start = STI("09:00");
         int answer = 0;
+        int remain = m;
         
-        ArrayList<Integer> list = new ArrayList<Integer>();
         for (int i=0; i<n; i++) {
             int bus_time = start + (i) * t;
-			list= new ArrayList<Integer>();
-
+            remain = m;
+            int last_passenger = 0;
 			while(!pq.isEmpty()) {
-				int time = pq.poll();
-				if(time <= bus_time && list.size() < m) list.add(time);
-				else {
-					pq.add(time);
-					break;
-				}
-				answer = time-1;
+				if(pq.peek() <= bus_time && remain>0){
+                    last_passenger = pq.poll();
+                    remain--;
+                }
+				else break;
+				answer = last_passenger-1;
 			}//end while.
 		}//end for.
         
-        if(list.size() < m) {
+        if(remain > 0) {
             answer = start + (n-1) * t;
         }//마지막 버스 조건처리.
         
