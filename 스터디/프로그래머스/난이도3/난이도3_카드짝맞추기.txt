@@ -1,0 +1,144 @@
+import java.util.*;
+
+class Solution {
+    
+    class Pos{
+        int x;
+        int y;
+        int score;
+        public Pos(int x, int y, int score){
+            this.x = x;
+            this.y = y;
+            this.score = score;
+        }
+    }//class Pos.
+    
+    static int row;
+    static int col;
+    static int[] num_list;
+    static boolean[] visited;
+    static int answer = Integer.MAX_VALUE;
+    static int[][] origin_map;
+    static int[][] copy_map;
+    static ArrayList<Pos> pos_list = new ArrayList<Pos>();
+    static ArrayList<ArrayList<Pos>> list = new ArrayList<ArrayList<Pos>>();
+    static int[][] direction = {{-1,0},{1,0},{0,-1},{0,1}};
+    public int solution(int[][] board, int r, int c) {
+        origin_map = board;
+        row = board.length;
+        col = board[0].length;
+        copy_map = new int[row][col];
+        boolean[] selected = new boolean[7];
+        int cnt = 0;
+        
+        for(int i=0; i<=6; i++){
+            list.add(new ArrayList<Pos>());
+        }//initialize list.
+        
+        for(int i=0; i<row; i++){
+            for(int j=0; j<col; j++){
+                if(board[i][j] != 0){
+                    selected[board[i][j]] = true;
+                    list.get(board[i][j]).add(new Pos(i,j,0));
+                    cnt++;
+                }
+            }//end for2.
+        }//end for1.
+        
+        num_list = new int[cnt/2];
+        visited = new boolean[cnt/2];
+        int top = -1;
+        for(int i=1; i<=6; i++){
+            if(selected[i]){
+                num_list[++top] = i;
+            }
+        }//end for.
+        
+        pos_list.add(new Pos(r,c,0));
+        dfs(cnt/2 , 0);
+        return answer;
+        
+    }//end main.
+    
+    private void dfs(int total, int cnt){
+        if(total == cnt){
+            int ans = play();
+            answer = answer > ans ? ans : answer;
+            return ;
+        }
+        for(int i=0; i<total; i++){
+            if(!visited[i]){
+                visited[i] = true;
+                pos_list.add(list.get(num_list[i]).get(0));
+                pos_list.add(list.get(num_list[i]).get(1));
+                dfs(total, cnt+1);
+                pos_list.remove(pos_list.size()-1);
+                pos_list.remove(pos_list.size()-1);
+                pos_list.add(list.get(num_list[i]).get(1));
+                pos_list.add(list.get(num_list[i]).get(0));
+                dfs(total, cnt+1);
+                pos_list.remove(pos_list.size()-1);
+                pos_list.remove(pos_list.size()-1);
+                visited[i] = false;
+            }
+        }//end for. (순열돌린다)
+    }//end dfs.
+    
+    private int play(){
+        for(int i=0; i<row; i++){
+            for(int j=0; j<col; j++){
+                copy_map[i][j] = origin_map[i][j];
+            }
+        }//copy.
+        int tmp = 0;
+        for(int i=1; i<pos_list.size(); i++){
+            tmp += distance(pos_list.get(i-1) , pos_list.get(i) , i%2); //엔터값 까지.
+        }
+        return tmp;
+    }//end play.
+    
+    private int distance(Pos p1 , Pos p2 , int flag){
+        Queue<Pos> q = new LinkedList<Pos>();
+        q.offer(p1);
+        int dist = 0;
+        while(!q.isEmpty()){
+            Pos p = q.poll();
+            int sx = p.x;
+            int sy = p.y;
+            int score = p.score;
+            if(sx == p2.x && sy == p2.y){
+                dist = score;
+                break;
+            }//end if.
+            else{
+                for(int k=0; k<4; k++){
+                    int nx = sx + direction[k][0];
+                    int ny = sy + direction[k][1];
+                    if(nx>=0 && nx<row && ny>=0 && ny<col){
+                        q.offer(new Pos(nx,ny,score+1));
+                    }
+                }//우선 4방탐색.
+                for(int k=0; k<4; k++){
+                    int nx = sx;
+                    int ny = sy;
+                    while(true){
+                        nx += direction[k][0];
+                        ny += direction[k][1];
+                        if(nx<0 || nx>=row || ny<0 || ny>=col){
+                            nx -= direction[k][0];
+                            ny -= direction[k][1];
+                            break;
+                        }
+                        if(copy_map[nx][ny] != 0) break;
+                    }
+                    q.offer(new Pos(nx,ny,score+1));
+                }//end for.
+            }//end else.
+        }//end while.
+        if(flag == 0){
+            copy_map[p1.x][p1.y] = 0;
+            copy_map[p2.x][p2.y] = 0;
+        }//없어진 처리.
+        return dist+1;
+    }//end distance.
+}//end solution.
