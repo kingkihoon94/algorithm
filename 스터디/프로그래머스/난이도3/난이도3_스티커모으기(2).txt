@@ -1,0 +1,23 @@
+class Solution {
+    public int solution(int sticker[]) {
+        int length = sticker.length;
+        
+        if(length == 1) return sticker[0];
+        else if(length == 2) return sticker[0] < sticker[1] ? sticker[1] : sticker[0];
+        //길이 1,2 조건 처리.
+        
+        int[][] dp = new int[2][length+2];
+        dp[0][0] = sticker[0];
+        dp[0][1] = sticker[0]; //0번쨰배열은 1을 선택한거기떄문에 0번쨰 1번쨰 값을 sticker[0]으로 만든다.
+        dp[1][0] = 0;
+        dp[1][1] = sticker[1]; //1번째배열은 1을 선택하지 않았으므로 0번째를 0 , 1번쨰를 sticker[1]로만든다.
+        for(int i=2; i<length-1; i++){
+            dp[0][i] = Math.max(dp[0][i-1] , dp[0][i-2] + sticker[i]);
+        }//1번쨰 부터 n-1 까지 배열에서 만들수 있는 최댓값.
+        for(int i=2; i<length; i++){
+            dp[1][i] = Math.max(dp[1][i-1] , dp[1][i-2] + sticker[i]);
+        }//2번쨰 부터 n 까지 배열에서 만들 수 있는 최댓값.
+        return dp[0][length-2] < dp[1][length-1] ? dp[1][length-1] : dp[0][length-2];
+    }//end main.
+}//end solution.
+//누가 봐도 dp..
