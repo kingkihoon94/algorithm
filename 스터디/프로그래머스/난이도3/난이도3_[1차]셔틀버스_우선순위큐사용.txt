@@ -1,0 +1,58 @@
+import java.util.*;
+
+class Solution {
+    public String solution(int n, int t, int m, String[] timetable) {
+        
+        PriorityQueue<Integer> pq = new PriorityQueue<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer num1, Integer num2) {
+                return num1-num2;
+            }
+        });
+        
+        for(String crew : timetable){
+            int crew_time = STI(crew);
+            pq.add(crew_time);
+        }//시간순으로 정렬.
+        
+        int start = STI("09:00");
+        int answer = 0;
+        
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for (int i=0; i<n; i++) {
+            int bus_time = start + (i) * t;
+			list= new ArrayList<Integer>();
+
+			while(!pq.isEmpty()) {
+				int time = pq.poll();
+				if(time <= bus_time && list.size() < m) list.add(time);
+				else {
+					pq.add(time);
+					break;
+				}
+				answer = time-1;
+			}//end while.
+		}//end for.
+        
+        if(list.size() < m) {
+            answer = start + (n-1) * t;
+        }//마지막 버스 조건처리.
+        
+        return ITS(answer);
+    }//end main.
+    
+    private int STI(String s){
+        String[] time_split = s.split(":");
+        int h = Integer.parseInt(time_split[0]);
+        int m = Integer.parseInt(time_split[1]);
+        return h * 60 + m;
+    }//end STI.
+    
+    private String ITS(int time){
+        String tmp = "";
+        int h = time/60;
+        int m = time%60;
+        return String.format("%02d:%02d" , h , m);
+    }//end ITS.
+    
+}//end solution.
