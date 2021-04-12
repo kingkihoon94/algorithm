@@ -1,0 +1,27 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int distance, int[] rocks, int n) {
+        Arrays.sort(rocks);
+        int answer = 0;
+        int left = 0;
+        int right = distance;
+        while(left<=right){
+            int mid = (left+right)/2; //모든 돌 사이의 거리가 mid보다 크거나 같게 되는경우 그중 최소가 mid...
+            int remove = 0; 
+            int now = 0;
+            for(int i=0; i<rocks.length; i++){
+                if(rocks[i] - now < mid) remove++;
+                else now = rocks[i];
+            }//end for.
+            if(distance - now < mid) remove++;
+            //우선 모든 돌 사이의 거리를 mid 이상으로 만들었다. 마지막 돌과 끝 점까지도 고려해줌.
+            if(remove <= n){
+                answer = answer < mid ? mid : answer;
+                left = mid+1;
+            }
+            else right = mid-1;
+        }//end while.
+        return answer;
+    }//end main.
+}//end solution.
