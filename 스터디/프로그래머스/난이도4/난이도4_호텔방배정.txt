@@ -1,0 +1,28 @@
+import java.util.*;
+
+class Solution {
+    static HashMap<Long, Long> hashmap = new HashMap<Long, Long>();
+    
+    public long[] solution(long k, long[] room_number) {
+        int length = room_number.length;
+        long[] answer = new long[length];
+        for(int i=0; i<length; i++){
+            long want = room_number[i];
+            answer[i] = solve(want);
+        }
+        return answer;
+    }//end main.
+    private long solve(long num){
+        if(!hashmap.containsKey(num)){
+            hashmap.put(num,num+1);
+            //num이 차있지 않으면 num+1을 가르켜준다.
+            return num;
+        }
+        else{
+            long next_num = solve(hashmap.get(num));
+            hashmap.put(num,next_num+1);
+            //결국 재귀 돌고 가져온 next_num에 배정해주니까 그 다음 +1 을 가르켜도 무방하다.
+            return next_num;
+        }
+    }//end solve.
+}//end solution.
