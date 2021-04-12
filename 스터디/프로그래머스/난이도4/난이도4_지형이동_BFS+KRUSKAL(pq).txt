@@ -1,0 +1,113 @@
+import java.util.*;
+import java.awt.*;
+
+class Solution {
+    static int row;
+    static int col;
+    static int[][] map;
+    static int[][] visited;
+    static int[][] direction = {{-1,0},{1,0},{0,-1},{0,1}};
+    static int[] parent;
+    
+    class Ladder implements Comparable<Ladder> {
+        int start;
+        int end;
+        int cost;
+        public Ladder(int start, int end, int cost){
+            this.start = start;
+            this.end = end;
+            this.cost = cost;
+        }//기본생성자.
+        @Override
+        public int compareTo (Ladder l1){
+            return this.cost - l1.cost;
+        }//override compare.
+    }//Class Ladder.
+    
+    public int solution(int[][] land, int height) {
+        row = land.length;
+        col = land[0].length;
+        map = land;
+        visited = new int[row][col];
+        int section = 0;
+        for(int i=0; i<row; i++){
+            for(int j=0; j<col; j++){
+                if(visited[i][j] == 0){
+                    bfs(new Point(i,j) , ++section , height);
+                }
+            }//end for2.
+        }//end for1.
+        
+        parent = new int[section+1];
+        for(int i=1; i<=section; i++){
+            parent[i] = i;
+        }//initialize parent.
+        
+        PriorityQueue<Ladder> pq = new PriorityQueue<Ladder>();
+        int nx = 0;
+        int ny = 0;
+        for(int i=0; i<row; i++){
+            for(int j=0; j<col; j++){
+                for(int k=0; k<4; k++){
+                    nx = i + direction[k][0];
+                    ny = j + direction[k][1];
+                    if(nx<0 || nx>=row || ny<0 || ny>=col || visited[i][j] == visited[nx][ny]) continue;
+                    else{
+                        pq.offer(new Ladder(visited[i][j] , visited[nx][ny], Math.abs(map[i][j] - map[nx][ny])));
+                    }
+                }//end for3.
+            }//end for2.
+        }//end for1.
+        
+        int answer = 0;
+        int cnt = 0;
+        
+        while(cnt < section-1 && !pq.isEmpty()){
+            Ladder ladder = pq.poll();
+            if(union(parent[ladder.start],parent[ladder.end])){
+                answer += ladder.cost;
+                cnt++;
+            }
+        }//end while. 결국 n개의 section이 있으면 n-1개만 이으면되니까 n-1번만 돌린다.
+        
+        return answer;
+    }//end main.
+    
+    private void bfs(Point point , int section , int h){
+        Queue<Point> q = new LinkedList<Point>();
+        q.offer(point);
+        visited[point.x][point.y] = section;
+        int nx = 0;
+        int ny = 0;
+        while(!q.isEmpty()){
+            Point p = q.poll();
+            for(int k=0; k<4; k++){
+                nx = p.x + direction[k][0];
+                ny = p.y + direction[k][1];
+                if(nx<0 || nx>=row || ny<0 || ny>=col || visited[nx][ny] != 0) continue;
+                else{
+                    if(Math.abs(map[nx][ny] - map[p.x][p.y]) <= h){
+                        q.offer(new Point(nx,ny));
+                        visited[nx][ny] = section;
+                    }
+                }
+            }//end for.
+        }//end while.
+    }//end bfs.
+    
+    private int find(int num){
+        if(parent[num] == num) return num;
+        else return find(parent[num]);
+    }//end find.
+    
+    private boolean union(int num1, int num2){
+        int p1 = find(num1);
+        int p2 = find(num2);
+        if(p1 == p2) return false;
+        else{
+            parent[p2] = p1;
+            return true;
+        }
+    }//end union.
+    
+}//end solution.
