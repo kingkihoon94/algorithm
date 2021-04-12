@@ -1,0 +1,101 @@
+import java.util.*;
+import java.awt.*;
+
+class Solution {
+    static int row;
+    static int col;
+    static int[][] map;
+    static int[][] direction = {{-1,0},{1,0},{0,-1},{0,1}};
+    static int[][] visited;
+    static int h;
+    
+    public int solution(int[][] land, int height) {
+        row = land.length;
+        col = land[0].length;
+        h = height;
+        map = land;
+        visited = new int[row][col];
+        int section = 0;
+        for(int i=0; i<row; i++){
+            for(int j=0; j<col; j++){
+                if(visited[i][j] == 0){
+                    bfs(new Point(i,j) , ++section);
+                }
+            }//end for2.
+        }//end for1.
+        int[][] ladder_list = new int[section+1][section+1];
+        boolean[] ladder_selected = new boolean[section+1];
+        
+        for(int i=1; i<=section; i++){
+            for(int j=1; j<=section; j++){
+                ladder_list[i][j] = Integer.MAX_VALUE;
+            }//end for2.
+        }//end for1.
+        
+        int nx = 0;
+        int ny = 0;
+        int start = 0;
+        int end = 0;
+        int cost = 0;
+        
+        for(int i=0; i<row; i++){
+            for(int j=0; j<col; j++){
+                for(int k=0; k<4; k++){
+                    nx = i + direction[k][0];
+                    ny = j + direction[k][1];
+                    if(nx<0 || nx>=row || ny<0 || ny>=col || visited[i][j] == visited[nx][ny]) continue;
+                    else{
+                        start = visited[i][j];
+                        end = visited[nx][ny];
+                        cost = Math.abs(map[i][j] - map[nx][ny]);
+                        if(cost < ladder_list[start][end]) ladder_list[start][end] = cost;
+                    }
+                }//end for3.
+            }//end for2.
+        }//end for1.
+        
+        int answer = 0;
+        
+        int idx = -1;
+        int min_cost = Integer.MAX_VALUE;
+        for(int i=1; i<section; i++){
+            idx = -1;
+            min_cost = Integer.MAX_VALUE;
+            for(int j=2 ; j<=section; j++){
+                if(!ladder_selected[j] && min_cost > ladder_list[1][j]){
+                    idx = j;
+                    min_cost = ladder_list[1][j];
+                }
+            }//end for2.
+            ladder_selected[idx] = true;
+            answer += min_cost;
+            for(int j=2; j<=section; j++){
+                ladder_list[1][j] = ladder_list[1][j] > ladder_list[idx][j] ? ladder_list[idx][j] : ladder_list[1][j];
+            }//배열 갱신.
+        }//Prim 알고리즘은 section-1 만큼 하면된당.
+        
+        return answer;
+    }//end main.
+    
+    private void bfs(Point point , int section){
+        Queue<Point> q = new LinkedList<Point>();
+        q.offer(point);
+        visited[point.x][point.y] = section;
+        int nx = 0;
+        int ny = 0;
+        while(!q.isEmpty()){
+            Point p = q.poll();
+            for(int k=0; k<4; k++){
+                nx = p.x + direction[k][0];
+                ny = p.y + direction[k][1];
+                if(nx<0 || nx>=row || ny<0 || ny>=col || visited[nx][ny] != 0) continue;
+                else{
+                    if(Math.abs(map[nx][ny] - map[p.x][p.y]) <= h){
+                        q.offer(new Point(nx,ny));
+                        visited[nx][ny] = section;
+                    }
+                }
+            }//end for.
+        }//end while.
+    }//end bfs.
+}//end solution.
