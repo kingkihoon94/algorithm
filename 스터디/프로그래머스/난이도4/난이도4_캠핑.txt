@@ -1,0 +1,61 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int n, int[][] data) {
+        ArrayList<Integer> x_list = new ArrayList<Integer>();
+        ArrayList<Integer> y_list = new ArrayList<Integer>();
+        for(int i=0; i<data.length; i++){
+            x_list.add(data[i][0]);
+            y_list.add(data[i][1]);
+        }//end for1.
+        ArrayList<Integer> x_idx = new ArrayList<>(new HashSet<Integer>(x_list));
+        ArrayList<Integer> y_idx = new ArrayList<>(new HashSet<Integer>(y_list));
+        Collections.sort(x_idx);
+        Collections.sort(y_idx);
+        
+        int[][] sum = new int[n][n];
+        
+        for(int i=0; i<n; i++){
+            int new_x = x_idx.indexOf(data[i][0]);
+            int new_y = y_idx.indexOf(data[i][1]);
+            data[i][0] = new_x;
+            data[i][1] = new_y;
+            //나중에 한번더 불러야하니까 부른김에 갱신.
+            sum[new_x][new_y] = 1;
+        }//end for. 압축 끝.
+        
+        for(int i=1; i<n; i++){
+            sum[i][0] += sum[i-1][0];
+            sum[0][i] += sum[0][i-1];
+        }//구간합을 위한 빌드업(?).
+        
+        for(int i=1; i<n; i++){
+            for(int j=1; j<n; j++){
+                sum[i][j] += sum[i-1][j] + sum[i][j-1] - sum[i-1][j-1];
+            }//end for2.
+        }//end for1. sum[i][j] : (0,0) 부터 (i,j) 까지 있는 쐐기 수.
+        
+        int answer = 0;
+        
+        for(int i=0; i<n; i++){
+            for(int j=i+1; j<n; j++){
+                if(data[i][0] == data[j][0] || data[i][1] == data[j][1]) continue;
+                else{
+                    int left_x = data[i][0] < data[j][0] ? data[i][0] : data[j][0];
+                    int left_y = data[i][1] < data[j][1] ? data[i][1] : data[j][1];
+                    int right_x = left_x == data[i][0] ? data[j][0] : data[i][0];
+                    int right_y = left_y == data[i][1] ? data[j][1] : data[i][1];
+                    
+                    if(left_x+1 == right_x || left_y+1 == right_y) answer++;
+                    else{
+                        if(sum[right_x-1][right_y-1] - sum[right_x-1][left_y] - sum[left_x][right_y-1] + sum[left_x][left_y] == 0) answer++;
+                        // (끝점-1 , 끝점-1) 까지 있는 쐐기 수에서 (끝점-1, 시작점) (시작점, 끝점-1) (시작점,시작점) 과의 구간합 비교를 통해 사이에
+                        // 쐐기가 있는지를 판단.
+                    }
+                }
+            }//end for2.
+        }//end for1. (N * N 복잡도)
+        
+        return answer;
+    }//end main.
+}//end solution.
