@@ -1,0 +1,27 @@
+class Solution {
+    static int[][] sub_list;
+    static int[][] matrix;
+    public int solution(int[][] matrix_sizes) {
+        matrix = matrix_sizes;
+        int row = matrix_sizes.length;
+        sub_list = new int[row][row];
+        int answer = solve(0, row-1);
+        return answer;
+    }//end main.
+    private int solve(int start , int end){
+        if(start == end) return 0;
+        if(sub_list[start][end] != 0) return sub_list[start][end];
+        
+        int left = matrix[start][0];
+        int right = matrix[end][1];
+        int min = Integer.MAX_VALUE;
+        for(int i=start; i<end; i++){
+            int left_cnt = solve(start,i);
+            int right_cnt = solve(i+1,end);
+            int tmp = left_cnt + right_cnt + left * matrix[i+1][0] * right;
+            min = min > tmp ? tmp : min;
+        }//end for.
+        
+        return sub_list[start][end] = min;
+    }//end solve.
+}//end solution.
