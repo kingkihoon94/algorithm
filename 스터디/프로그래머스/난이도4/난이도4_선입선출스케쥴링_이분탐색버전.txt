@@ -1,0 +1,44 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int n, int[] cores) {
+        if(cores.length >= n) return n;
+        int min_time = Integer.MAX_VALUE;
+        for(int core : cores){
+            min_time = min_time > core ? core : min_time;
+        }//end for.
+        int answer = 0;
+        int left = n / cores.length * min_time;
+        int right = n * min_time;
+ex:     while(left <= right){
+            int mid = (left + right) / 2;
+            int total = cores.length; //지금 시간 전까지 끝낸 일. (처음에 0시간에 core.length만큼 일하고있다)
+            int now = 0; //지금 시간에 받을 수 있는것.
+            for(int i=0; i<cores.length; i++){
+                total += mid / cores[i];
+                if(mid % cores[i] == 0) {
+                    total--;
+                    now++;
+                }
+            }//end for.
+            if(total >= n) right = mid - 1;
+            //시간 더 왼쪽으로 땡겨도됨.
+            else{
+                if(total + now < n) left = mid+1;
+                //시간 오른쪽으로 밀어야함.
+                else{
+                    for(int i=0; i<cores.length; i++){
+                        if(mid % cores[i] == 0) {
+                            total++;
+                            if(total == n) {
+                                answer = i+1;
+                                break ex;
+                            }
+                        }
+                    }
+                }//지금까지 한거는 n에 못미치지만 현재 코어가 비어서 받을 수 있는 것 안에 n이 있다면 해당 코어 찾는다.
+            }
+        }//end while.
+        return answer;
+    }//end main.
+}//end solution.
