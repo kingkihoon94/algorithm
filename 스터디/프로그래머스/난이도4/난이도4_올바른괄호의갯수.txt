@@ -1,0 +1,21 @@
+class Solution {
+    static int count;
+    static int answer = 0;
+    public int solution(int n) {
+        count = n;
+        dfs(0,0);
+        return answer;
+    }//end main.
+    private void dfs(int left, int right){
+        if(left < right) return ; // 현 시점에서 닫는 괄호가 더 많은건 일어날 수 없는일.
+        else if(left > count || right > count) return ;
+        else if(left == count && right == count){
+            answer++;
+            return ;
+        }
+        else{
+            dfs(left+1, right);
+            dfs(left, right+1);
+        }
+    }//end dfs.
+}//end solution.
