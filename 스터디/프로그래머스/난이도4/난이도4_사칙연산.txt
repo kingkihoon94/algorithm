@@ -1,0 +1,41 @@
+class Solution {
+    static int[][] dp;
+    static String[] list;
+    static int answer = Integer.MIN_VALUE;
+    public int solution(String arr[]) {
+        list = arr;
+        int length = list.length;
+        dp = new int[length][length];
+        
+        for(int i=0; i<length; i++){
+            for(int j=0; j<length; j++){
+                dp[i][j] = Integer.MIN_VALUE;
+            }
+            if(i%2==0) dp[i][i] = Integer.parseInt(list[i]);
+        }//initialize dp. (dp[i][j] : i~j까지 구간의 최댓값)
+        
+        return topDown(0,length-1);
+    }//end main.
+    private int topDown(int start , int end){
+        if(dp[start][end] != Integer.MIN_VALUE) return dp[start][end];
+        int tmp = 0;
+        if(start!=0 && list[start-1].charAt(0) == '-'){
+            tmp = Integer.MAX_VALUE;
+            for(int i=start; i<end; i+=2) {
+				if(list[i+1].charAt(0) == '-') tmp = Math.min(tmp, topDown(start, i) - topDown(i+2, end));
+				else tmp = Math.min(tmp, topDown(start, i) + topDown(i+2, end));
+			}
+        }//i-1값을 비교할것이기때문에 start 가 0 인경우는 앞이 + 라고 판단.
+        // - 로 엮여있으면 안에 계산값이 최소여야 최댓값을 배출한다.
+        else{
+            tmp = Integer.MIN_VALUE;
+            for(int i=start; i<end; i+=2) {
+				if(list[i+1].charAt(0) == '-') tmp = Math.max(tmp, topDown(start, i) - topDown(i+2, end));
+				else tmp = Math.max(tmp, topDown(start, i) + topDown(i+2, end));
+			}
+        }
+        // + 로 엮여있으면 안에 계산값이 최대여야 최댓값을 배출한다.
+        return dp[start][end] = tmp;
+    }//end topDown.
+    //topDown(i,j) 가 의미하는것. --> i 앞에 붙은 부호가 - 면 최솟값 (최솟값을 - 한 값이 결국 i~j 내에 최댓값이긴 함.) ,  + 면 최댓값을 리턴해주는 함수.
+}//end solution.
