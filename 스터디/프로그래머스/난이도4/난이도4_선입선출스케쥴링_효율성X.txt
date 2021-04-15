@@ -1,0 +1,41 @@
+import java.util.*;
+
+class Solution {
+    class Core implements Comparable<Core>{
+        int idx;
+        int duration;
+        int time;
+        public Core(int idx, int duration, int time){
+            this.idx = idx;
+            this.duration = duration;
+            this.time = time;
+        }
+        @Override
+        public int compareTo(Core c1){
+            if(this.time != c1.time) return this.time - c1.time;
+            else return this.idx - c1.idx;
+        }
+    }//Class Core.
+    
+    public int solution(int n, int[] cores) {
+        PriorityQueue<Core> pq = new PriorityQueue<Core>();
+        for(int i=0; i<cores.length; i++){
+            pq.offer(new Core(i+1,cores[i],0));
+        }
+        int answer = 0;
+        int time = 0;
+        int cnt = 0;
+        while(true){
+            Core core = pq.poll();
+            time = core.time;
+            cnt++;
+            if(cnt == n){
+                answer = core.idx;
+                break;
+            }
+            core.time = time + core.duration;
+            pq.offer(core);
+        }
+        return answer;
+    }//end main.
+}//end solution.
