@@ -1,0 +1,20 @@
+class Solution {
+    public int[] solution(long begin, long end) {
+        int length = (int)(end - begin);
+        int[] answer = new int[length+1];
+        for(int i=0; i<=length; i++){
+            answer[i] = solve((int)(begin+i));
+        }
+        if(begin == 1L) answer[0] = 0;
+        //함수 내에서 조건 처리해주는것 보다 이게 더 효율성 있어보임.
+        return answer;
+    }//end main.
+    private int solve(int num){
+        double max = Math.sqrt(num);
+        for(int i=2 ; i<=max; i++){
+            if(num%i == 0 && (num / i) < 10000000 ) return num/i;
+        }//end for.
+        return 1;
+    }//end solve.
+    //굳이 long을 쓸 이유가 없다.
+}//end solution.
