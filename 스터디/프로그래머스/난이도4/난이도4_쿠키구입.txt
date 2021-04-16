@@ -1,0 +1,46 @@
+class Solution {
+    public int solution(int[] cookie) {
+        int length = cookie.length;
+        
+        int answer = 0;
+
+        for(int m=0; m<length-1; m++){
+            int left = m;
+            int right = m+1;
+            //기준점을 잡는다.(문제에서 m에 해당)
+            int left_total = cookie[left];
+            int right_total = cookie[right];
+            while(true){
+                boolean move_left = false;
+                boolean move_right = false;
+                if(left_total == right_total){
+                    answer = answer < left_total ? left_total : answer;
+                    left--;
+                    right++;
+                    move_left = true;
+                    move_right = true;
+                }//같을 경우.
+                else if(left_total < right_total) {
+                    left--;
+                    move_left = true;
+                }
+                //왼쪽을 확장한다.
+                else {
+                    right++;
+                    move_right = true;
+                }
+                //오른쪽을 확장한다.
+                if(left<0 || right>=length) break;
+                //더이상 확장할 수 없는경우.
+                else{
+                    if(move_left) left_total += cookie[left];
+                    if(move_right) right_total += cookie[right];
+                }
+                //확장 가능한데 flag에 의해 왼쪽 오른쪽 합을 정해준다.
+            }//end while.
+            System.out.println("");
+        }//end for.
+        
+        return answer;
+    }//end main.
+}//end solution.
