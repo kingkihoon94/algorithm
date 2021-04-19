@@ -1,0 +1,71 @@
+import java.util.*;
+class Solution {
+    public int solution(int n, int m, int[][] timetable) {
+        int[] user_cnt = new int[722];
+        for(int i=0; i<timetable.length; i++){
+            user_cnt[timetable[i][0] - 600]++;
+            user_cnt[timetable[i][1] - 600 + 1]--; 
+            //손님이 나가는시간과 다른 손님이 들어오는 시간에는 2명 있는걸로 치기위함.
+        }//end for.
+        int max_cnt = 0;
+        for(int i=1; i<=720; i++){
+            user_cnt[i] += user_cnt[i-1];
+            if(user_cnt[i] > max_cnt) max_cnt = user_cnt[i]; 
+        }
+        if(max_cnt == 0 || max_cnt == 1) return 0;
+        else return solve(n,max_cnt);
+    }//end main.
+    
+    private int solve(int n , int max){
+        System.out.println(max);
+        int left = 1;
+        int right = 2 * (n-1);
+        int answer = 0;
+        while(left<=right){
+            int mid = (left + right)/2;
+            boolean can_make = false;
+            for(int i=0; i<n; i++){
+                if(make(n,max,mid,i)){
+                    can_make = true;
+                    break;
+                }
+                //첫번쨰줄에 1개를 무조건 놓고 시작한다.
+            }
+            if(can_make) {
+                answer = mid;
+                left = mid+1;
+            }
+            if(!can_make) right = mid-1;
+        }//end while.
+        return answer;
+    }//end solve. (n*n 정사각형에서 cnt를 배치하는 방법)
+    
+    private boolean make(int n, int max, int dist, int start){
+        if(start-dist >=0) return false;
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        list.add(start);
+        int length = n*n;
+        int cnt = 1;
+        for(int i=start+1; i<length; i++){
+            int dx = i/n;
+            int dy = i%n;
+            boolean select = true;
+            for(int j=0; j<list.size(); j++){
+                int nx = list.get(j)/n;
+                int ny = list.get(j)%n;
+                int ndist = Math.abs(dx-nx) + Math.abs(dy-ny);
+                if(ndist < dist) {
+                    select=false;
+                    break;
+                }
+            }//end for2.
+            if(select) {
+                cnt++;
+                list.add(i);
+                if(cnt == max) return true;
+            }
+        }//end for1.
+        return false;
+    }//end make.
+    
+}//end solution.
