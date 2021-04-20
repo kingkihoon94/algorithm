@@ -1,0 +1,67 @@
+import java.util.*;
+class Solution {
+    class Food implements Comparable<Food>{
+        int idx;
+        int count;
+        public Food(int idx, int count){
+            this.idx = idx;
+            this.count = count;
+        }
+        @Override
+        public int compareTo(Food f1){
+            return this.count - f1.count;
+        }
+    }//class Food.
+    
+    public int solution(int[] food_times, long k) {
+        int length = food_times.length;
+        PriorityQueue<Food> pq = new PriorityQueue<Food>();
+        
+        long total_time = 0L;
+        for(int i=0; i<length; i++){
+            total_time += food_times[i];
+        }
+        
+        if(total_time <= k) return -1;
+        
+        for(int i=0; i<length; i++){
+            pq.offer(new Food(i,food_times[i]));
+        }//end for1.
+        
+        long time = 0L;
+        int remove_cnt = 0;
+        int prev = 0;
+        
+        ArrayList<Food> list = new ArrayList<Food>();
+        
+        while(!pq.isEmpty()){
+            Food food = pq.poll();
+            int round = food.count - prev;
+            long tmp_time = (long)(round) * (long)(length-remove_cnt);
+            if(time + tmp_time <= k){
+                prev = food.count;
+                time += tmp_time;
+                remove_cnt++;
+            }//아직 k까지 도달하지 못하는 경우.
+            else {
+                list.add(food);
+                break;
+            }
+        }//end while.
+      
+        while(!pq.isEmpty()){
+            list.add(pq.poll());
+        }//남아있는 food를 리스트에 저장.
+        
+        Collections.sort(list, new Comparator<Food>(){
+            @Override
+            public int compare(Food f1, Food f2){
+                return f1.idx - f2.idx;
+            }
+        });//남은 food를 idx 로 정렬한다.
+        
+        int answer = list.get((int)((k-time) % (length-remove_cnt))).idx + 1;
+        
+        return answer;
+    }//end main.
+}//end solution.
