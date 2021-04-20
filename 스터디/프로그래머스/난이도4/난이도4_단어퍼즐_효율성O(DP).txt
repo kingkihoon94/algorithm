@@ -1,0 +1,28 @@
+class Solution {
+    public int solution(String[] strs, String t) {
+        int length = t.length();
+        int[] dp =  new int[length];
+
+        for (int len1 = 1; len1 <= length; len1++) {
+            for(String str : strs){
+                int len2 = str.length();
+                if(len1 >= len2){ //우선 쪼개려는 크기가 str 보다는 커야한다.
+                    if(str.equals(t.substring(len1 - len2 , len1))){ //해당 len1 에서 len2만큼 왼쪽길이 확장.
+                        if(len1 == len2){
+                            dp[len1-1] = 1; //초기값 넣어주기.
+                        }//len1이 len2과 같은경우. (초기값 설정 이라고 보면 됨)
+                        else{
+                            if(dp[len1 - len2 - 1] > 0){
+                                if(dp[len1-1] == 0) dp[len1-1] = dp[len1-len2-1] + 1;
+                                else dp[len1-1] = dp[len1-1] < dp[len1-len2-1] + 1 ? dp[len1-1] : dp[len1-len2-1] + 1;
+                            }
+                        }//len1이 len2 보다 큰경우.(dp 최솟값 갱신)
+                    }
+                }
+            }//end for2.
+        }//end for1.
+    
+        if (dp[length-1] == 0) return -1;
+        else return dp[length-1];
+    }//end main.
+}//end soltion.
