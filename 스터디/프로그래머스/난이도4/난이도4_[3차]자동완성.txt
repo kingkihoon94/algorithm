@@ -1,0 +1,49 @@
+import java.util.*;
+
+class Solution {
+    
+    class Node{
+        HashMap<Character, Node> child = new HashMap<Character, Node>();
+        int count = 0;
+        
+        public Node add(char c){
+            this.count++;
+            if(!this.child.containsKey(c)){
+                this.child.put(c, new Node());
+            }
+            return this.child.get(c);
+        }//method Node.add
+        
+    }//class Node.
+    
+    public int solution(String[] words) {
+        Node root = new Node();
+        for(String word : words){
+            insert(root, word);
+        }//end insert.
+        
+        int answer = solve(root,0);
+        return answer;
+    }//end main.
+    
+    private void insert(Node node, String word){
+        Node now = node;
+        for(int i=0; i<word.length(); i++){
+            char c = word.charAt(i);
+            Node next = now.add(c);
+            now = next;
+        }//end for.
+        now.add('!');
+    }//end insert.
+    
+    private int solve(Node node, int now){
+        if(node.count == 1) return now; // gon, gu 같이 그 밑에 하나만 딸려가는경우 가지치기.
+        int next = 0;
+        for(char key : node.child.keySet()){
+            if(key == '!') next += now;
+            else next += solve(node.child.get(key), now+1);
+        }
+        return next;
+    }//end solve.
+    
+}//end solution.
