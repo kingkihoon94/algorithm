@@ -1,0 +1,53 @@
+import java.util.*;
+
+class Solution {
+    static HashMap<Integer, ArrayList<String>> hashmap = new HashMap<Integer, ArrayList<String>>();
+    static int answer = Integer.MAX_VALUE;
+    static String origin;
+    static int origin_length;
+    public int solution(String[] strs, String t) {
+        origin = t;
+        origin_length = origin.length();
+        
+        for(String str : strs){
+            int length = str.length();
+            if(hashmap.containsKey(length)){
+                ArrayList<String> list = hashmap.get(length);
+                list.add(str);
+                hashmap.put(length, list);
+            }
+            else{
+                ArrayList<String> list = new ArrayList<String>();
+                list.add(str);
+                hashmap.put(length, list);
+            }
+        }//end for.
+        
+        solve(origin.length() , 0);
+ 
+        if(answer == Integer.MAX_VALUE) return -1;
+        else return answer;
+    }//end main.
+    
+    private void solve(int length, int time){
+        if(time > answer) return ;
+        //큰거부터 찾아서 최솟값을 갱신해왔기때문에 이걸로 가지치기를 할 수 있다.
+        if(length == 0){
+            answer = answer > time ? time : answer;
+            return;
+        }
+        for(int i=length ; i>=1; i--){
+            String tmp = origin.substring(origin_length - length , origin_length - length + i);
+            int idx = tmp.length();
+            if(hashmap.containsKey(idx)){
+                for(int j=0; j<hashmap.get(idx).size(); j++){
+                    String key = hashmap.get(idx).get(j);
+                    if(tmp.equals(key)){
+                        solve(length-i, time+1);
+                        break;
+                    }
+                }
+            }//해당 갯수를 키로가지는 List 가 있다면 실행.
+        }//end for1.
+    }//end solve.
+}//end solution.
