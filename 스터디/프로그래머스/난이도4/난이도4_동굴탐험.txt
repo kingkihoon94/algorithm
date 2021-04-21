@@ -1,0 +1,56 @@
+import java.util.*;
+
+class Solution {
+    static boolean[] visited;
+    static boolean[] cant_go;
+    static boolean[] fail_list;
+    static int[] pair_list;
+    static ArrayList<Integer>[] list;
+    public boolean solution(int n, int[][] path, int[][] order) {
+        visited = new boolean[n];
+        cant_go = new boolean[n];
+        fail_list = new boolean[n];
+        pair_list = new int[n];
+        
+        for(int i=0; i<n; i++){
+            pair_list[i] = -1;
+        }//end for1.
+        for(int[] pair : order){
+            pair_list[pair[0]] = pair[1];
+            cant_go[pair[1]] = true;
+        }//end for1.
+        list = new ArrayList[n];
+        for(int i=0; i<n; i++){
+            list[i] = new ArrayList<Integer>();
+        }//end for1.
+        for(int[] edge : path){
+            list[edge[0]].add(edge[1]);
+            list[edge[1]].add(edge[0]);
+        }//end for1.
+        
+        dfs(0);
+        
+        for(int i=0; i<n; i++){
+            if(!visited[i]) return false;
+        }
+        return true;
+    }//end main.
+    
+    private void dfs(int now){
+        if(cant_go[now]){
+            fail_list[now] = true;
+            return;
+        }
+        visited[now] = true;
+        if(pair_list[now] != -1){
+            cant_go[pair_list[now]] = false;
+            if(fail_list[pair_list[now]]) dfs(pair_list[now]);
+        }//end if.
+        for(int i=0; i<list[now].size(); i++){
+            int next = list[now].get(i);
+            if(!visited[next]){
+                dfs(next);
+            }
+        }//end for.
+    }//end dfs.
+}//end solution.
