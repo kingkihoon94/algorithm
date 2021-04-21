@@ -1,0 +1,102 @@
+import java.util.*;
+import java.awt.*;
+
+class Solution {
+    static ArrayList<Point>[] list;
+    static ArrayList<Point>[] empty_list;
+    static int row;
+    public int solution(int[][] board) {
+        boolean[] remove = new boolean[201];
+        list = new ArrayList[201];
+        empty_list = new ArrayList[201];
+        for(int i=0; i<=200; i++){
+            list[i] = new ArrayList<Point>();
+            empty_list[i] = new ArrayList<Point>();
+        }//end for1. (initialize)
+        
+        row = board.length;
+        int max = 0;
+        
+        for(int i=0; i<row; i++){
+            for(int j=0; j<row; j++){
+                if(board[i][j] !=0){
+                    max = max < board[i][j] ? board[i][j] : max;
+                    list[board[i][j]].add(new Point(i,j));
+                }
+            }//end for2.
+        }//end for1.
+        
+        if(max == 0) return 0;
+        
+        for(int i=1; i<=max; i++){
+            Point[] empty = find_empty(i);
+            empty_list[i].add(empty[0]);
+            empty_list[i].add(empty[1]);
+        }//end for1.
+        
+        int answer = 0;
+        
+        while(true){
+            ArrayList<Integer> now_remove = new ArrayList<Integer>();
+            for(int i=1; i<=max; i++){
+                if(!remove[i]){
+                    if(can_fill(board, empty_list[i].get(0)) && can_fill(board,empty_list[i].get(1))) now_remove.add(i);
+                }
+            }//end for1.
+            
+            if(now_remove.size() == 0) break;
+            else {
+                for(int i=0; i<now_remove.size(); i++){
+                    int idx = now_remove.get(i);
+                    remove[idx] = true;
+                    for(int k=0; k<4; k++){
+                        board[list[idx].get(k).x][list[idx].get(k).y] = 0;
+                    }
+                }
+                answer += now_remove.size();
+            }
+        }//end while.
+        
+        return answer;
+    }//end main.
+    
+    private Point[] find_empty(int idx){
+        int min_x = 100;
+        int min_y = 100;
+        int max_x = -1;
+        int max_y = -1;
+        for(int i=0; i<list[idx].size(); i++){
+            Point p = list[idx].get(i);
+            min_x = min_x > p.x ? p.x : min_x;
+            min_y = min_y > p.y ? p.y : min_y;
+            max_x = max_x < p.x ? p.x : max_x;
+            max_y = max_y < p.y ? p.y : max_y;
+        }//end for1.
+        boolean[][] fake_map = new boolean[max_x - min_x + 1][max_y - min_y + 1];
+        for(int i=0; i<list[idx].size(); i++){
+            Point p = list[idx].get(i);
+            fake_map[p.x-min_x][p.y-min_y] = true;
+        }//end for1.
+        int cnt = 0;
+        Point[] find = new Point[2];
+        for(int i=0; i<=max_x-min_x; i++){
+            for(int j=0; j<=max_y-min_y; j++){
+                if(!fake_map[i][j]){
+                    find[cnt++] = new Point(i+min_x,j+min_y);
+                }
+            }
+        }//end for1.
+        return find;
+    }//end find_empty.
+    
+    private boolean can_fill(int[][] map, Point p){
+        int sx = p.x;
+        int sy = p.y;
+        while(sx>=0){
+            if(map[sx][sy] !=0) return false;
+            sx--;
+        }
+        return true;
+    }//end can_fill.
+    
+}//end solution.
