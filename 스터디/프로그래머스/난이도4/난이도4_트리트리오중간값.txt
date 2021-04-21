@@ -1,0 +1,78 @@
+import java.util.*;
+
+class Solution {
+    static ArrayList<Integer>[] list;
+    static int N;
+    public int solution(int n, int[][] edges) {
+        N = n;
+        list = new ArrayList[N+1];
+	    for (int i = 1; i <= N; i++) {
+		    list[i] = new ArrayList<Integer>();
+	    }//end initialize.
+	    for(int [] edge : edges) {
+		    list[edge[0]].add(edge[1]);
+		    list[edge[1]].add(edge[0]);
+	    }//end input.
+        int[] result1 = bfs(1);
+        
+        int start = 1;
+        
+	    for (int i = 1; i <= n; i++) {
+		    if(result1[i] > result1[start]) start = i;
+	    }//1번에서 가장 먼 i 를 찾는다.
+        
+        int[] result2 = bfs(start);
+        
+        int max = 0;
+        int cnt = 0;
+        int start2 = 0;
+        for(int i=0; i<result2.length; i++){
+            if(max < result2[i]){
+                cnt = 1;
+                max = result2[i];
+                start2 = i;
+            }
+            else if(max == result2[i]){
+                cnt++;
+            }
+        }
+        if(cnt >= 2) return max;
+        else{
+            int[] result3 = bfs(start2);
+            max = 0;
+            cnt = 0;
+            for(int i=0; i<result3.length; i++){
+                if(max < result3[i]){
+                    cnt = 1;
+                    max = result3[i];
+                }
+                else if(max == result3[i]){
+                    cnt++;
+                }
+            }
+            if(cnt >=2) return max;
+            else return max-1;
+        }
+    }//end main.
+    
+    private int[] bfs(int start){
+        Queue<Integer> q = new LinkedList<Integer>();
+        int [] dist = new int [N+1];
+        boolean [] selected = new boolean [N+1];
+	    q.add(start);
+        selected[start] = true;
+	    
+        while(!q.isEmpty()){
+            int now = q.poll();
+            for(int i=0; i<list[now].size(); i++){
+                int next = list[now].get(i);
+                if(!selected[next]){
+                    selected[next] = true;
+                    q.add(next);
+                    dist[next] = dist[now] + 1;
+                }
+            }//end for.
+        }//end while.
+        return dist;
+    }//end bfs.
+}//end solution.
