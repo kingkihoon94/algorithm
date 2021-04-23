@@ -1,0 +1,149 @@
+import java.util.*;
+import java.awt.*;
+
+class Solution {
+    public int solution(int[][] board) {
+        ArrayList<Point>[] point_list = new ArrayList[201];
+        
+        for(int i=0; i<=200; i++){
+            point_list[i] = new ArrayList<Point>();
+        }//end for.
+        
+        int row = board.length;
+        
+        for(int i=0; i<row; i++){
+            for(int j=0; j<row; j++){
+                if(board[i][j] != 0){
+                    point_list[board[i][j]].add(new Point(i,j));
+                }
+            }//end for2.
+        }//end for1.
+        
+        ArrayList<ArrayList<Point>> can_remove_list = new ArrayList<ArrayList<Point>>();
+        for(int i=1; i<=200; i++){
+            if(point_list[i].size() != 4) continue;
+            Point p1 = point_list[i].get(0);
+            Point p2 = point_list[i].get(1);
+            Point p3 = point_list[i].get(2);
+            Point p4 = point_list[i].get(3);
+            if(Type_A(p1,p2,p3,p4)){
+                ArrayList<Point> tmp_list = new ArrayList<Point>();
+                tmp_list.add(new Point(p1.x, p1.y+1));
+                tmp_list.add(new Point(p1.x, p1.y+2));
+                tmp_list.add(p1);
+                tmp_list.add(p2);
+                tmp_list.add(p3);
+                tmp_list.add(p4);
+                can_remove_list.add(tmp_list);
+            }
+            else if(Type_B(p1,p2,p3,p4)){
+                ArrayList<Point> tmp_list = new ArrayList<Point>();
+                tmp_list.add(new Point(p1.x, p1.y-1));
+                tmp_list.add(new Point(p1.x+1, p1.y-1));
+                tmp_list.add(p1);
+                tmp_list.add(p2);
+                tmp_list.add(p3);
+                tmp_list.add(p4);
+                can_remove_list.add(tmp_list);
+            }
+            else if(Type_C(p1,p2,p3,p4)){
+                ArrayList<Point> tmp_list = new ArrayList<Point>();
+                tmp_list.add(new Point(p1.x, p1.y+1));
+                tmp_list.add(new Point(p1.x+1, p1.y+1));
+                tmp_list.add(p1);
+                tmp_list.add(p2);
+                tmp_list.add(p3);
+                tmp_list.add(p4);
+                can_remove_list.add(tmp_list); 
+            }
+            else if(Type_D(p1,p2,p3,p4)){
+                ArrayList<Point> tmp_list = new ArrayList<Point>();
+                tmp_list.add(new Point(p1.x, p1.y-1));
+                tmp_list.add(new Point(p1.x, p1.y-2));
+                tmp_list.add(p1);
+                tmp_list.add(p2);
+                tmp_list.add(p3);
+                tmp_list.add(p4);
+                can_remove_list.add(tmp_list);
+            }
+            else if(Type_E(p1,p2,p3,p4)){
+                ArrayList<Point> tmp_list = new ArrayList<Point>();
+                tmp_list.add(new Point(p1.x, p1.y-1));
+                tmp_list.add(new Point(p1.x, p1.y+1));
+                tmp_list.add(p1);
+                tmp_list.add(p2);
+                tmp_list.add(p3);
+                tmp_list.add(p4);
+                can_remove_list.add(tmp_list);
+            }
+        }//end for.
+        
+        int length = can_remove_list.size();
+        boolean[] remove = new boolean[length];
+        int answer = 0;
+        
+        while(true){
+            ArrayList<Integer> remove_idx_list = new ArrayList<Integer>();
+            for(int i=0; i<length; i++){
+                if(!remove[i]){
+                    if(can_fill(board, can_remove_list.get(i).get(0)) && can_fill(board, can_remove_list.get(i).get(1))) remove_idx_list.add(i);
+                }
+            }//end for.
+            if(remove_idx_list.size() == 0) break;
+            else{
+                answer += remove_idx_list.size();
+                for(int i=0; i<remove_idx_list.size(); i++){
+                    int idx = remove_idx_list.get(i);
+                    remove[idx] = true;
+                    for(int k=0; k<4; k++){
+                        Point p = can_remove_list.get(idx).get(2+k);
+                        board[p.x][p.y] = 0;
+                    }//end for.
+                }//end for.
+            }
+        }//end while.
+        return answer;
+    }//end main.
+    
+    private boolean Type_A(Point p1 , Point p2, Point p3, Point p4){
+        int sx = p1.x;
+        int sy = p1.y;
+        if(p2.x == sx+1 && p2.y == sy && p3.x == sx+1 && p3.y == sy+1 && p4.x == sx+1 && p4.y == sy+2) return true;
+        return false;
+    }
+    private boolean Type_B(Point p1 , Point p2, Point p3, Point p4){
+        int sx = p1.x;
+        int sy = p1.y;
+        if(p2.x == sx+1 && p2.y == sy && p3.x == sx+2 && p3.y == sy-1 && p4.x == sx+2 && p4.y == sy) return true;
+        return false;
+    }
+    private boolean Type_C(Point p1 , Point p2, Point p3, Point p4){
+        int sx = p1.x;
+        int sy = p1.y;
+        if(p2.x == sx+1 && p2.y == sy && p3.x == sx+2 && p3.y == sy && p4.x == sx+2 && p4.y == sy+1) return true;
+        return false;
+    }
+    private boolean Type_D(Point p1 , Point p2, Point p3, Point p4){
+        int sx = p1.x;
+        int sy = p1.y;
+        if(p2.x == sx+1 && p2.y == sy-2 && p3.x == sx+1 && p3.y == sy-1 && p4.x == sx+1 && p4.y == sy) return true;
+        return false;
+    }
+    private boolean Type_E(Point p1 , Point p2, Point p3, Point p4){
+        int sx = p1.x;
+        int sy = p1.y;
+        if(p2.x == sx+1 && p2.y == sy-1 && p3.x == sx+1 && p3.y == sy && p4.x == sx+1 && p4.y == sy+1) return true;
+        return false;
+    }
+    //5가지 가능한 타입 인지 아닌지 확인.
+    
+    private boolean can_fill(int[][] board , Point p){
+        int sx = p.x;
+        int sy = p.y;
+        while(sx>=0){
+            if(board[sx][sy] != 0) return false;
+            sx--;
+        }//end while.
+        return true;
+    }//end can_fill.
+}//end solution.
