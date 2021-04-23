@@ -1,0 +1,24 @@
+class Solution {
+    public int solution(int n) {
+        
+        int answer = solve(n, 0); //덧셈 갯수 0개로 시작.
+        return answer;
+    }//end main.
+    private int solve(int num, int plus){        
+        int min = (int)Math.pow(3,plus/2);
+        if(num < min) return 0;
+        //지금까지 쓴 plus 갯수로 앞으로 나올 별의 갯수를 구하고 그로 만드는 최솟값과 비교를 통해 안되는 경우 배척.
+        if(num == 3 && plus == 2) return 1;
+        //만들어야 하는수가 3인데 앞에 누적 + 갯수가 2이면 1 리턴.
+        
+        int cnt = 0;
+        
+        if(plus >= 2 && num%3 == 0) cnt += solve(num/3 , plus-2);
+        //*을 해당 위치에 놀 수 있는경우. ( + 가 2개 이상이고 3의 배수로 떨어지면 누적된 + 값 2 감소하면서 재귀)
+        cnt += solve(num-1 , plus+1);
+        //+를 놓으며 num-1 값을 만들 경우를 찾는다.
+
+        return cnt;
+    }//end solve.
+    
+}//end soltion.
