@@ -1,0 +1,64 @@
+import java.util.*;
+
+class Solution {
+    static int[][] dp;
+    static int[] price;
+    static ArrayList<ArrayList<Integer>> tree = new ArrayList<ArrayList<Integer>>();
+    
+    public int solution(int[] sales, int[][] links) {
+        price = sales;
+        dp = new int[price.length+1][2];
+        for(int i=0; i<=price.length; i++){
+            dp[i][0] = -1;
+            dp[i][1] = -1;
+        }//end initialize.
+        for(int i=0; i<=price.length; i++){
+            tree.add(new ArrayList<Integer>());
+        }//end initialize.
+        for(int [] link : links){
+            tree.get(link[0]).add(link[1]);
+        }//end initialize.
+
+        return Math.min(TopDown(1,1) , TopDown(1,0));
+    }//end main.
+    
+    private int TopDown(int now, int select){
+        //System.out.println(now + " , " + select);
+        if(dp[now][select] != -1) return dp[now][select];
+        
+        int total = 0;
+        
+        if(select == 1){
+            total += price[now-1];
+            //leaf 인 경우 해당 now 의 금액 리턴.
+            for(int i=0;i<tree.get(now).size();i++){
+                int next = tree.get(now).get(i);
+                total +=  Math.min(TopDown(next, 1), TopDown(next, 0));
+            }//end for.
+            return dp[now][select] = total;
+        }
+        else{
+            if(tree.get(now).size() == 0) return dp[now][select] = 0;
+            //leaf 인 경우 0 리턴.
+            boolean check = false;
+            int min = Integer.MAX_VALUE;
+            for(int i=0;i<tree.get(now).size();i++){
+                int next = tree.get(now).get(i);
+                int num1 = TopDown(next, 1);
+                int num2 = TopDown(next, 0);
+                
+                if(num1 <= num2) {
+                    total += num1;
+                    check = true;
+                }//밑의 부하들중 하나라도 체크가 되는경우.
+                else {
+                    total += num2;
+                    min = num1-num2 < min ? num1-num2 : min; 
+                }//모두 안골라질 경우를 대비해 가장 최솟값을 구해놓는다.
+            }
+            if(check) return dp[now][select] = total;
+            else return dp[now][select] = total+min;
+        }
+    }//end TopDown.
+    
+}//end solution.
