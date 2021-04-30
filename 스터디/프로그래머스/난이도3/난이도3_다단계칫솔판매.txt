@@ -1,0 +1,43 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(String[] enroll, String[] referral, String[] seller, int[] amount) {
+        HashMap<String, String> parent_map = new HashMap<String, String>();
+        HashMap<String, Integer> price_map = new HashMap<String, Integer>();
+        
+        for(String name : enroll){
+            parent_map.put(name, name);
+            price_map.put(name , 0);
+        }//end enroll.
+        
+        for(int i=0; i<referral.length; i++){
+            String name = referral[i];
+            parent_map.put(enroll[i] , name);
+        }//end referral.
+        
+        for(int i=0; i<seller.length; i++){
+            String name = seller[i];
+            int price = amount[i] * 100;
+            while(true){
+                String parent = parent_map.get(name);
+                int parent_price = price/10;
+                int my_price = price - parent_price;
+                if(parent.equals("-")){
+                    price_map.put(name , price_map.get(name) + my_price);   
+                    break;
+                }
+                else{
+                    price_map.put(name , price_map.get(name) + my_price);   
+                    name = parent;
+                    price = parent_price;
+                }
+            }//end while.
+        }//end seller , amount.
+        
+        int[] answer = new int[enroll.length];
+        for(int i=0; i<answer.length; i++){
+            answer[i] = price_map.get(enroll[i]);
+        }//end answer.
+        return answer;
+    }//end main.
+}//end solution.
