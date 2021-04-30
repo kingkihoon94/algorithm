@@ -1,0 +1,48 @@
+import java.util.*;
+
+class Solution {
+    
+    static boolean[] visited;
+    static long[] amount_list;
+    static ArrayList<Integer>[] tree;
+    static long answer = 0L;
+    
+    public long solution(int[] a, int[][] edges) {
+        
+        visited = new boolean[a.length];
+        amount_list = new long[a.length];
+        tree = new ArrayList[a.length];
+        
+        long total = 0L;
+        
+        for(int i=0; i<a.length; i++){
+            total += a[i];
+            amount_list[i] = a[i];
+            tree[i] = new ArrayList<Integer>();
+        }//end for.
+        
+        if(total != 0L) return -1L;
+        
+        for(int[] edge : edges){
+            tree[edge[0]].add(edge[1]);
+            tree[edge[1]].add(edge[0]);
+        }//end for.
+        
+        long amount_zero = dfs(0); //루트를 그냥 0으로잡고 했다.
+        return answer;
+        //생각해보면 각 a 의 총합이 0이아니면 리턴하는 방법도 있을듯 하다.(그렇게 안풀면 테케 틀림.)
+    }//end main.
+    
+    private long dfs(int now){
+        visited[now] = true;
+        
+        for(int i=0; i<tree[now].size(); i++){
+            int next = tree[now].get(i);
+            if(!visited[next]) amount_list[now] += dfs(next);
+        }
+        
+        answer += Math.abs(amount_list[now]);
+        
+        return amount_list[now];
+    }//end dfs.
+}//end solution.
