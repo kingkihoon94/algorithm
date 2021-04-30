@@ -1,0 +1,121 @@
+import java.util.*;
+
+class Solution {
+    
+    static ArrayList<String> word = new ArrayList<String>();
+	static HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+    static HashMap<Character, ArrayList<Integer>> idx_map = new HashMap<Character, ArrayList<Integer>>();
+    static HashMap<Character, Boolean> select_map = new HashMap<Character, Boolean>();
+    
+    public static String solution(String sentence) {
+        for(int i=0; i<sentence.length(); i++){
+            char now = sentence.charAt(i);
+            if(now>='a' && now<='z'){
+                if(!map.containsKey(now)){
+                    map.put(now, 1);
+                    select_map.put(now, false);
+                    ArrayList<Integer> idx_list = new ArrayList<Integer>();
+                    idx_list.add(i);
+                    idx_map.put(now, idx_list);
+                }
+                else {
+                    map.put(now , map.get(now)+1);
+                    ArrayList<Integer> idx_list = idx_map.get(now);
+                    idx_list.add(i);
+                    idx_map.put(now, idx_list);
+                }
+            }
+        }//make hashmap.
+		
+        String decrypt1 = "";
+        for(int i=0; i<sentence.length();){
+            char now = sentence.charAt(i);
+            if(now>='a' && now<='z' && map.get(now) == 2){
+                if(select_map.get(now)) return "invalid";
+                select_map.put(now , true);
+                String tmp = sentence.substring(idx_map.get(now).get(0)+1 , idx_map.get(now).get(1));
+                decrypt1 += " ";
+                decrypt1 += tmp;
+                decrypt1 += " ";
+                i = idx_map.get(now).get(1)+1;
+            }
+            else{
+                decrypt1 += now;
+                i++;
+            }
+        }//end for.
+        System.out.println(decrypt1);
+        String[] decrypt1_split = decrypt1.split(" ");
+        String decrypt2 = "";
+        for(String str : decrypt1_split){
+            boolean get_decrypt = false;
+            for(int i=0; i<str.length(); i++){
+                if(str.charAt(i) >= 'a' && str.charAt(i) <= 'z'){
+                    get_decrypt = true;
+                    break;
+                }
+            }
+            if(get_decrypt){
+                for(int i=0; i<str.length();i++){
+                    if(i+1 == str.length()){
+                        decrypt2 += str.charAt(i);
+                        decrypt2 += " ";
+                    }
+                    else{
+                        decrypt2 += str.charAt(i);
+                        if(str.charAt(i)>='A' && str.charAt(i)<='Z' && str.charAt(i+1)>='A' && str.charAt(i+1)<='Z'){
+                            decrypt2 += " ";
+                        }
+                    }
+                }
+            }
+            else{
+                decrypt2 += str;
+                decrypt2 += " ";
+            }
+        }//end for.
+        
+        System.out.println(decrypt2);
+        String[] decrypt2_split = decrypt2.split(" ");
+        String decrypt3 = "";
+        for(String str : decrypt2_split){
+            char decrypt2_code = 'A';
+            for(int i=0; i<str.length(); i++){
+                char ch = str.charAt(i);
+                if(ch>='a' && ch<='z'){
+                    if(decrypt2_code == 'A'){
+                        if(select_map.get(ch)) return "invalid";
+                        else {
+                            select_map.put(ch , true);
+                            decrypt2_code = ch;
+                        }
+                    }
+                    else{
+                        if(decrypt2_code != ch) return "invalid";
+                    }
+                }
+            }
+            if(decrypt2_code == 'A') {
+                decrypt3 += str;
+                decrypt3 += " ";
+            }
+            else{
+                for(int i=0; i<str.length(); i+=2){
+                    decrypt3 += str.charAt(i);
+                }
+                decrypt3 += " ";
+            }
+        }//end for.
+        
+        System.out.println(decrypt3);
+        String[] answer_list = decrypt3.split(" ");
+        
+		String answer = "";
+        for(String str : answer_list){
+            answer += str;
+            answer += " ";
+        }
+        answer = answer.substring(0, answer.length()-1);
+		return answer;
+	}//end main.
+}//end class.
