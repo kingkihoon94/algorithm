@@ -1,0 +1,22 @@
+import java.io.*;
+import java.util.*;
+
+class Solution {
+    public long[] solution(long[] numbers) {
+        long[] answer = new long[numbers.length];
+        for(int i=0; i<numbers.length; i++){
+            answer[i] = solve(numbers[i]);
+        }//end for.
+        return answer;
+    }//end main.
+    
+    public long solve(long num){
+        String ltob = '0' + Long.toBinaryString(num);
+        int idx = ltob.lastIndexOf('0');
+        StringBuilder sb = new StringBuilder(ltob);
+        sb.setCharAt(idx, '1');
+        if(num%2 !=0) sb.setCharAt(idx+1, '0'); //끝자리가 0이 아닌경우.
+
+        return Long.parseLong(sb.toString(), 2);
+    }//end solve.
+}//end solution.
