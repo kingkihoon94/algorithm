@@ -1,0 +1,69 @@
+import java.util.regex.*;
+import java.util.*;
+import java.io.*;
+
+class Solution {
+    public int solution(String word, String[] pages) {
+        HashMap<String, Integer> basicScore = new HashMap<String, Integer>();
+        HashMap<String, Double> linkScore = new HashMap<String, Double>();
+        ArrayList<String> nameList = new ArrayList<String>();
+
+        word = word.toLowerCase();
+        for(int i=0; i<pages.length; i++){
+            pages[i] = pages[i].toLowerCase();
+        }//모두 소문자 처리.
+        
+        int answer = 0; 
+        double max_value = 0L;
+        
+        for(int i=0; i<pages.length; i++){ 
+            int basicCnt = 0;
+            int linkCnt = 0;
+            ArrayList<String> linkList = new ArrayList<String>();
+            String pName = "";
+            Pattern pattern = Pattern.compile("<meta property=\"og:url\" content=\\S+/>");
+            Matcher matcher = pattern.matcher(pages[i].split("</head>")[0]);
+            if(matcher.find()) {
+                pName = matcher.group();   
+                pName = pName.substring(33, pName.length()-3);
+            }  
+            nameList.add(pName);
+            //해당 페이지 name 만들기.
+            String page = pages[i].split("<body>")[1].replaceAll("[0-9]", " ");
+            pattern = Pattern.compile("\\b"+word+"\\b");
+            matcher = pattern.matcher(page);
+            while(matcher.find()) basicCnt++; //해당 word만큼 기본점수 증가.
+            basicScore.put(pName,basicCnt);
+            //기본점수 구하기.
+            page = pages[i].split("<body>")[1];
+            pattern = Pattern.compile("<a href=\\S+>");
+            matcher = pattern.matcher(page);
+            while(matcher.find()) {
+                String link = matcher.group();
+                link = link.substring(9,link.length()-2);
+                if(link.charAt(link.length()-1) == '/') link = link.substring(0,link.length()-4);
+                linkList.add(link);
+            }//외부 링크 점수 구하기.
+            int size = linkList.size(); //현재 페이지의 외부 링크 수
+            for(int j=0; j<size; j++) {
+                String link = linkList.get(j);
+                if(!linkScore.containsKey(link)) linkScore.put(link, (double)basicCnt/size);
+                else linkScore.put(link, linkScore.get(link)+(double)basicCnt/size);
+            }//end for.
+        }//end for.
+        
+        for(int i=0; i<nameList.size(); i++){
+            String name = nameList.get(i);
+            double value = 0L;
+            if(basicScore.containsKey(name)) value += (double)basicScore.get(name);
+            if(linkScore.containsKey(name)) value += linkScore.get(name);
+            if(value > max_value) {
+                max_value = value;
+                answer = i;
+            }
+        }//end for.
+        
+        
+        return answer;
+    }//end main.
+}//end solution.
