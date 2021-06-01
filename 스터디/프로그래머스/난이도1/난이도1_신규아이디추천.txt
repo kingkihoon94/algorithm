@@ -1,0 +1,41 @@
+class Solution {
+    public String solution(String new_id) {
+        
+        new_id = new_id.toLowerCase(); 
+        //1단계
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<new_id.length(); i++){
+            char now = new_id.charAt(i);
+            if(now>='a' && now<='z') sb.append(now);
+            else if(now>='0' && now<='9') sb.append(now);
+            else if(now=='-' || now=='_' || now=='.') sb.append(now);
+        }//end for. 
+        //2단계
+        
+        String tmp = sb.toString();
+        while(tmp.contains("..")){
+            tmp = tmp.replace("..", ".");
+        }//end while. 
+        //3단계
+
+        if(tmp.length() >0 && tmp.charAt(0) == '.') tmp = tmp.substring(1,tmp.length());
+        if(tmp.length() >0 && tmp.charAt(tmp.length()-1) == '.') tmp = tmp.substring(0,tmp.length()-1);
+        //4단계
+        
+        if(tmp.length() == 0) tmp = "a"; 
+        //5단계
+        
+        if(tmp.length() >= 16) {
+            tmp = tmp.substring(0,15); 
+            if(tmp.charAt(14) == '.') tmp = tmp.substring(0,14);
+        }//6단계
+        
+        while(tmp.length()<3){
+            tmp += tmp.charAt(tmp.length()-1);
+        }//end while. 
+        //7단계.
+        
+        String answer = tmp;
+        return answer;
+    }//end main.
+}//end solution.
