@@ -1,0 +1,42 @@
+import java.util.*;
+
+class Solution {
+    static boolean[] selected;
+    public int solution(int[] nums) {
+        Arrays.sort(nums);
+        int l = nums.length;
+        int max = nums[l-1] + nums[l-2] + nums[l-3];
+        selected = new boolean[max+1];
+        solve(max);
+        
+        HashMap<Integer, Boolean> map = new HashMap<Integer,Boolean>();
+        for(int i=2; i<=max; i++){
+            if(!selected[i]){
+                map.put(i,true);
+            }
+        }//end for.
+        
+        int answer = 0;
+        for(int i=0; i<l-2; i++){
+            for(int j=i+1; j<l-1; j++){
+                for(int k=j+1; k<l; k++){
+                    int tmp = nums[i] + nums[j] + nums[k];
+                    if(map.containsKey(tmp)) answer++;
+                }
+            }
+        }
+        return answer;
+    }//end main.
+    
+    private void solve(int num){
+        int sqrt = (int)Math.sqrt(num);
+        for(int i=2; i<=sqrt; i++){
+            int now = i*2;
+            while(now<= num){
+                selected[now] = true;
+                now += i;
+            }
+        }
+    }//end solve.
+    
+}//end solution.
