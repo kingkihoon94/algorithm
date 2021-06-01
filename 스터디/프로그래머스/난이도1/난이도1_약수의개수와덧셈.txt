@@ -1,0 +1,23 @@
+class Solution {
+    public int solution(int left, int right) {
+        int answer = 0;
+        for(int i=left; i<=right; i++){
+            boolean flag = solve(i);
+            if(flag) answer+= i;
+            else answer-= i;
+        }//end for.
+        return answer;
+    }//end main.
+    private boolean solve(int num){
+        int max = (int)Math.sqrt(num);
+        int cnt = 0;
+        for(int i=1; i<=max; i++){
+            if(num%i == 0){
+                if(num/i == i) cnt++;
+                else cnt+=2;
+            }
+        }//end for.
+        if(cnt % 2 == 0) return true;
+        else return false;
+    }//end solve.
+}//end solution.
