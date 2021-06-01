@@ -1,0 +1,15 @@
+class Solution {
+    public int solution(int[] nums) {
+        int N = nums.length;
+        boolean[] visited = new boolean[200001];
+        int answer = 0;
+        for(int now : nums){
+            if(!visited[now]){
+                answer++;
+                visited[now] = true;
+            }
+        }
+        
+        return answer > N/2 ? N/2 : answer;
+    }//end main.
+}//end solution.
