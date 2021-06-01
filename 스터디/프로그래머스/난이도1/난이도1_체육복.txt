@@ -1,0 +1,48 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int n, int[] lost, int[] reserve) {
+        int answer = n - lost.length;
+        boolean[] flag = new boolean[n+1];
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for(int now : lost){
+            for(int i=0; i<reserve.length; i++){
+                if(now == reserve[i]) {
+                    flag[now] = true;
+                    answer++;
+                }
+            }
+        }
+        
+        for(int now : lost){
+            if(!flag[now]) list.add(now);
+        }
+        
+        
+        for(int now : reserve){
+            if(flag[now]) continue;
+            
+            int left = now-1;
+            boolean can_rent = false;
+            for(int i=0; i<list.size(); i++){
+                if(left == list.get(i)){
+                    can_rent = true;
+                    answer++;
+                    list.remove(i);
+                    break;
+                }
+            }
+            if(!can_rent){
+                int right = now+1;
+                for(int i=0; i<list.size(); i++){
+                    if(right == list.get(i)){
+                        answer++;
+                        list.remove(i);
+                        break;
+                    }
+                }
+            }
+        }
+        return answer;
+    }//end main.
+}//end solution.
