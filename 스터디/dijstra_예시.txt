@@ -1,0 +1,11 @@
+static class Edge implements Comparable<Edge> {
+      int v, cost;
+      Edge(int v, int cost) {
+         this.v = v;
+         this.cost = cost;
+      }
+      @Override
+      public int compareTo(Edge o) {
+         return Integer.compare(this.cost, o.cost);
+      }
+   }
