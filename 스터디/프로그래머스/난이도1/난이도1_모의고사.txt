@@ -1,0 +1,47 @@
+import java.util.*;
+class Solution {
+    public int[] solution(int[] answers) {
+        int cnt_1 = 0;
+        int cnt_2 = 0;
+        int cnt_3 = 0;
+        for(int i=0; i<answers.length; i++){
+            if((i+1)%5 == (answers[i]%5)) cnt_1++;
+            if(i%2==0 && answers[i] ==2) cnt_2++;
+            else if(i%2==1){
+                int tmp = (i/2)%4;
+                if(tmp<1){
+                    if(answers[i] == tmp+1) cnt_2++;
+                }
+                else{
+                    if(answers[i] == tmp+2) cnt_2++;
+                }
+            }
+            int tmp = i%10;
+            if(tmp/2 == 0 && answers[i] == 3) cnt_3++;
+            else if(tmp/2 == 1 && answers[i] == 1) cnt_3++;
+            else if(tmp/2 == 2 && answers[i] == 2) cnt_3++;
+            else if(tmp/2 == 3 && answers[i] == 4) cnt_3++;
+            else if(tmp/2 == 4 && answers[i] == 5) cnt_3++;
+        }
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        list.add(1);
+        int max = cnt_1;
+        if(max == cnt_2) list.add(2);
+        else if(max < cnt_2){
+            list = new ArrayList<Integer>();
+            list.add(2);
+            max = cnt_2;
+        }
+        if(max == cnt_3) list.add(3);
+        else if(max < cnt_3){
+            list = new ArrayList<Integer>();
+            list.add(3);
+            max = cnt_3;
+        }
+        int[] answer = new int[list.size()];
+        for(int i=0; i<list.size(); i++){
+           answer[i] = list.get(i);
+        }
+        return answer;
+    }//end main.
+}//end solution.
