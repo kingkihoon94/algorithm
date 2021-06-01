@@ -1,0 +1,20 @@
+class Solution {
+    public int solution(int n) {
+        int answer = solve(n);
+        return answer;
+    }//end main.
+    
+    private int solve (int n){
+        String tmp = "";
+        while(n !=0){
+            tmp += n%3;
+            n /= 3;
+        }
+        int num = 0;
+        for(int i=0; i<tmp.length(); i++){
+            num += (int)Math.pow(3,tmp.length()-i-1) * (tmp.charAt(i) -'0');
+            
+        }
+        return num;
+    }//end solve.
+}//end solution.
