@@ -1,0 +1,15 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int[] d, int budget) {
+        Arrays.sort(d);
+        int answer = 0;
+        for(int num : d){
+            if(budget>=num){
+                answer++;
+                budget-=num;
+            }
+        }//end for.
+        return answer;
+    }//end main.
+}//end solution.
