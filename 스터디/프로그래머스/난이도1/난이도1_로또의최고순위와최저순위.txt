@@ -1,0 +1,36 @@
+class Solution {
+    public int[] solution(int[] lottos, int[] win_nums) {
+        int cnt = 0;
+        int zero_cnt = 0;
+        for(int num : lottos){
+            if(num == 0) zero_cnt++;
+            else{
+                for(int now : win_nums){
+                    if(now == num){
+                        cnt++;
+                        break;
+                    }
+                }
+            }
+        }
+        int max_cnt = cnt+zero_cnt;
+        int[] answer = new int[2];
+        answer[0] = form(max_cnt);
+        answer[1] = form(cnt);
+        return answer;
+    }//end main.
+    private int form(int num){
+        int tmp = 0;
+        switch(num){
+            case 0: tmp = 6; break;
+            case 1: tmp = 6; break;
+            case 2 : tmp = 5; break;
+            case 3 : tmp = 4; break;
+            case 4 : tmp = 3; break;
+            case 5 : tmp = 2; break;
+            case 6 : tmp = 1; break;
+        }
+        return tmp;
+    }//end form.
+    
+}//end solution.
