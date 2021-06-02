@@ -1,0 +1,13 @@
+import java.util.*;
+
+class Solution {
+    public String solution(String s) {
+        char[] char_list = s.toCharArray();
+        Arrays.sort(char_list);
+        String answer = "";
+        for(int i=0; i<char_list.length; i++){
+            answer = char_list[i] + answer;
+        }
+        return answer;
+    }//end main.
+}//end solution.

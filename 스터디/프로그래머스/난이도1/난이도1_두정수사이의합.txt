@@ -1,0 +1,15 @@
+class Solution {
+    public long solution(int a, int b) {
+        long left = a < b ? a : b;
+        long right = a < b ? b : a;
+        long answer = 0;
+        if((right - left) % 2 == 1){
+            answer = (left+right) * ((right - left)/2+1);
+        }
+        else{
+            answer = (left+right) * ((right - left)/2);
+            answer += (left+right)/2;
+        }
+        return answer;
+    }//end main.
+}//end solution.

@@ -1,0 +1,16 @@
+class Solution {
+    public int solution(int n) {
+        boolean[] selected = new boolean[n+1];
+        int answer = 0;
+        for(int i=2; i<=n; i++){
+            if(selected[i]) continue;
+            answer++;
+            int start = i*2;
+            while(start<=n){
+                selected[start] = true;
+                start += i;
+            }//end while.
+        }//end for.
+        return answer;
+    }//end main.
+}//end solution.

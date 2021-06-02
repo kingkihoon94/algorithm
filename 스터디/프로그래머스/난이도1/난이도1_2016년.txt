@@ -1,0 +1,16 @@
+class Solution {
+    static int[] month_day = {31,29,31,30,31,30,31,31,30,31,30,31};
+    static String[] week_day = {"SUN" , "MON" , "TUE" , "WED" , "THU" , "FRI" , "SAT"};
+    public String solution(int a, int b) {
+        int day = 0;
+        int diff_month = a-1;
+        for(int i=0; i<diff_month; i++){
+            day += month_day[i];
+        }
+        int diff_day = b-1;
+        day += diff_day;
+        day %= 7;
+        String answer = week_day[(5+day)%7];
+        return answer;
+    }//end main.
+}//end solution.
