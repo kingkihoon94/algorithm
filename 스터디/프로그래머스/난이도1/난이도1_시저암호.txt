@@ -1,0 +1,16 @@
+class Solution {
+    public String solution(String s, int n) {
+        String answer = "";
+        for(int i=0; i<s.length(); i++){
+            char c = s.charAt(i);
+            if(c>= 'a' && c<='z'){
+                answer += (char)(97 + (c-'a'+n)%26);
+            }
+            else if(c>= 'A' && c<='Z'){
+                answer += (char)(65 + (c-'A'+n)%26);
+            }
+            else answer += c;
+        }//end for.
+        return answer;
+    }//end main.
+}//end solution.
