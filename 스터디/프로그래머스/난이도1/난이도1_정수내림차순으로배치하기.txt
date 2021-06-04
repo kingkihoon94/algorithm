@@ -1,0 +1,21 @@
+import java.util.*;
+
+class Solution {
+    public long solution(long n) {
+        String tmp = ""+n;
+        String[] list = tmp.split("");
+        int[] num_list = new int[list.length];
+        int top = -1;
+        for(String s : list){
+            num_list[++top] = Integer.parseInt(s);
+        }
+        Arrays.sort(num_list);
+        String answer_str = "";
+        for(int num : num_list){
+            answer_str = num + answer_str;
+        }
+        System.out.println(answer_str);
+        Long answer = Long.parseLong(answer_str);
+        return answer;
+    }//end main.
+}//end solution.
