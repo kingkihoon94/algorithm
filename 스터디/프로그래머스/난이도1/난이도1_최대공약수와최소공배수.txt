@@ -1,0 +1,23 @@
+class Solution {
+    public int[] solution(int n, int m) {
+        int gcd = GCD(n,m);
+        int lcm = gcd * (n/gcd) * (m/gcd);
+        int[] answer = new int[2];
+        answer[0] = gcd;
+        answer[1] = lcm;
+        return answer;
+    }//end main.
+    private int GCD(int num1, int num2){
+        if(num1 < num2){
+            num1 = num1+num2;
+            num2 = num1-num2;
+            num1 -= num2;
+        }
+        while(num2!=0){
+            int tmp = num1%num2;
+            num1 = num2;
+            num2 = tmp;
+        }//end while.
+        return num1;
+    }//end GCD.
+}//end solution.
