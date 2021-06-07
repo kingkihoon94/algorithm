@@ -1,0 +1,51 @@
+import java.util.*;
+
+class Solution {
+    static int[][] direction = {{-1,0},{-1,1},{0,1},{1,1},{1,0},{1,-1},{0,-1},{-1,-1}};
+    public int solution(int[] arrows) {
+        HashMap<String, Boolean> v_map = new HashMap<String, Boolean>();
+        HashMap<String, ArrayList<String>> e_map = new HashMap<String, ArrayList<String>>();
+        int answer = 0;
+        int dx = 0;
+        int dy = 0;
+        v_map.put(vtos(dx,dy), true);
+        ArrayList<String> tmp = new ArrayList<String>();
+        e_map.put(vtos(dx,dy),tmp);
+        for(int num : arrows){
+            for(int time=0; time<2; time++){
+                int nx = dx + direction[num][0];
+                int ny = dy + direction[num][1];
+                // System.out.println(nx + " , " + ny);
+                if(v_map.containsKey(vtos(nx,ny))){
+                    ArrayList<String> edge_list = e_map.get(vtos(nx,ny));
+                    if(!edge_list.contains(vtos(dx,dy))){
+                        answer++;
+                        edge_list.add(vtos(dx,dy));
+                        e_map.put(vtos(nx,ny),edge_list);
+                        ArrayList<String> list = e_map.get(vtos(dx,dy));
+                        list.add(vtos(nx,ny));
+                        e_map.put(vtos(dx,dy) , list);
+                    }
+                }
+                else{
+                    v_map.put(vtos(nx,ny) , true);
+                    ArrayList<String> new_list = new ArrayList<String>();
+                    new_list.add(vtos(dx,dy));
+                    e_map.put(vtos(nx,ny) , new_list);
+                    ArrayList<String> list = e_map.get(vtos(dx,dy));
+                    list.add(vtos(nx,ny));
+                    e_map.put(vtos(dx,dy) , list);
+                }//방문한 적이 없는 vertex인경우.
+                dx = nx;
+                dy = ny;
+            }//end for2.
+        }//end for1.
+        return answer;
+    }//end main.
+    
+    private String vtos(int x, int y){
+        String tmp = x + "/" + y;
+        return tmp;
+    }//end vtos.
+    
+}//end solution.
