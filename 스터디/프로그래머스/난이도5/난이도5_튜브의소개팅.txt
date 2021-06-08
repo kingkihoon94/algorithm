@@ -1,0 +1,66 @@
+import java.util.*;
+
+class Solution {
+    
+    class Tube implements Comparable<Tube>{
+        int x;
+        int y;
+        int dist;
+        int time;
+        
+        public Tube(int x, int y, int dist, int time){
+            this.x = x;
+            this.y = y;
+            this.dist = dist;
+            this.time = time;
+        }
+        
+        @Override 
+        public int compareTo(Tube t){
+            if(this.dist == t.dist) return this.time - t.time;
+            else return this.dist - t.dist;
+        }
+    }//class Tube.
+    
+    static int[][] direction = {{-1,0},{1,0},{0,-1},{0,1}};
+        
+    public int[] solution(int m, int n, int s, int[][] time_map) {
+        //m 이 row , n 이 col.
+        int dist = 0;
+        int talk = 0;
+        long[][] time_list = new long[m][n];
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                time_list[i][j] = Long.MAX_VALUE;
+            }
+        }//draw map.
+        time_list[0][0] = 0L;
+        
+        PriorityQueue<Tube> pq = new PriorityQueue<Tube>();
+        pq.add(new Tube(0,0,0,0));
+        while(!pq.isEmpty()){
+            Tube t = pq.poll();
+            if(t.x == m-1 && t.y == n-1){
+                dist = t.dist;
+                talk = t.time;
+                break;
+            }
+            for(int k=0; k<4; k++){
+                int nx = t.x + direction[k][0];
+                int ny = t.y + direction[k][1];
+                if(nx>=0 && nx<m && ny>=0 && ny<n && time_map[nx][ny] != -1){
+                    long tmp_time = (long)t.time + time_map[nx][ny];
+                    if(time_list[nx][ny] > tmp_time && tmp_time <=s){
+                        time_list[nx][ny] = tmp_time;
+                        pq.add(new Tube(nx,ny,t.dist+1,(int)time_list[nx][ny]));
+                    }
+                }//해당 지점에 가는경우.
+            }//end for.
+        }//end while.
+        
+        int[] answer = new int[2];
+        answer[0] = dist;
+        answer[1] = talk;
+        return answer;
+    }//end main.
+}//end solution.
