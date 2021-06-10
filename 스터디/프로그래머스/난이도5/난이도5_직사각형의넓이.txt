@@ -1,0 +1,91 @@
+import java.util.*;
+import java.awt.*;
+
+class Solution {
+    class Line implements Comparable<Line>{
+        int sx;
+        int sy;
+        int ey;
+        boolean end;
+        public Line(int sx, int sy, int ey, boolean end){
+            this.sx = sx;
+            this.sy = sy;
+            this.ey = ey;
+            this.end = end;
+        }//Line.
+        @Override
+        public int compareTo(Line l){
+            return this.sx - l.sx;
+        }
+    }//class Line.
+    
+    static int[] check;
+    static ArrayList<Integer> y_list = new ArrayList<Integer>();
+    
+    public long solution(int[][] rectangles) {
+        long answer = 0L;
+        
+        ArrayList<Line> list = new ArrayList<Line>();
+        HashMap<Integer,Boolean> y_map = new HashMap<Integer,Boolean>();
+        
+        for(int[] rectangle : rectangles){
+            list.add(new Line(rectangle[0],rectangle[1],rectangle[3],false));
+            list.add(new Line(rectangle[2],rectangle[1],rectangle[3],true));
+            y_map.put(rectangle[1],true);
+            y_map.put(rectangle[3],true);
+        }//end for.
+        
+        Collections.sort(list);
+        for(int key : y_map.keySet()){
+            y_list.add(key);
+        }//end for.
+        Collections.sort(y_list);
+        HashMap<Integer, Integer> ptoi = new  HashMap<Integer, Integer>();
+        for(int i=0; i<y_list.size(); i++){
+            ptoi.put(y_list.get(i),i);
+        }
+        check = new int[y_list.size()];
+        
+        int prev = 0;
+        for(int i=0; i<list.size(); i++){
+            Line l = list.get(i);
+            answer += (l.sx - prev) * getLength();
+            int s_idx = ptoi.get(l.sy);
+            int e_idx = ptoi.get(l.ey);
+            if(!l.end){
+                for(int j=s_idx; j<=e_idx; j++){
+                    check[j]++;
+                }
+            }
+            else{
+                for(int j=s_idx; j<=e_idx; j++){
+                    if(check[j]>0)check[j]--;
+                }
+            }
+            prev = l.sx;
+        }//end for.
+        
+        return answer;
+    }//end main.
+    private long getLength(){
+        int left =  -1;
+        int right = 0;
+        long answer = 0L;
+        for(int i=0; i<check.length; i++){
+            if(check[i] > 0){
+                if(left == -1) left = i;
+                else{
+                    right = i;
+                }
+            }
+            else{
+                if(left != -1){
+                    answer += (long)(y_list.get(right)-y_list.get(left));
+                    left = -1;
+                }
+            }
+        }
+        if(left != -1) answer += (long)(y_list.get(right)-y_list.get(left));
+        return answer;
+    }//end getLength.
+}//end solution.
