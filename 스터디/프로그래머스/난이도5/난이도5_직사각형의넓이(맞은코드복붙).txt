@@ -1,0 +1,139 @@
+import java.util.*;
+
+class Solution {
+    public long solution(int[][] rectangles) {
+
+        HashSet<Long> xSet = new HashSet<Long>();
+        HashSet<Long> ySet = new HashSet<Long>();
+        HashMap<Long,Integer> xIdx = new HashMap<Long,Integer>();      
+        HashMap<Long,Integer> yIdx = new HashMap<Long,Integer>();
+
+        int n = rectangles.length;
+
+        for(int i = 0; i < n; i ++) {
+
+            xSet.add((long)rectangles[i][0]);
+            xSet.add((long)rectangles[i][2]);
+            ySet.add((long)rectangles[i][1]);
+            ySet.add((long)rectangles[i][3]);
+
+        }
+
+        ArrayList<Long> xList = new ArrayList<Long>(xSet);
+        ArrayList<Long> yList = new ArrayList<Long>(ySet);
+        ArrayList<Long> yWide = new ArrayList<Long>(yList.size() - 1);
+
+        Collections.sort(xList);
+        Collections.sort(yList);
+
+        for(int i = 0; i < yList.size() - 1; i ++) {
+            yWide.add(yList.get(i+1) - yList.get(i));
+        }
+
+        for(int i = 0; i < xList.size(); i ++)
+            xIdx.put(xList.get(i), i);
+        for(int i = 0; i < yList.size(); i ++)
+            yIdx.put(yList.get(i), i);
+
+
+        long[][] rec = new long[rectangles.length * 2][4];
+
+        for(int i = 0; i < rectangles.length; i ++) {
+
+            int startidx = i*2;
+
+            rec[startidx][0] = (long)rectangles[i][0];
+            rec[startidx][1] = (long)rectangles[i][1];
+            rec[startidx][2] = (long)rectangles[i][3];
+            rec[startidx][3] = 1; //start
+
+            int endidx = startidx + 1;
+
+            rec[endidx][0] = (long)rectangles[i][2];
+            rec[endidx][1] = (long)rectangles[i][1];
+            rec[endidx][2] = (long)rectangles[i][3];
+            rec[endidx][3] = 0; //end
+        }
+
+        Arrays.sort(rec, new Comparator<long[]>() {
+
+            @Override
+            public int compare(long[] o1, long[] o2) {
+                if(o1[0] < o2[0]) return -1;
+                if(o1[0] > o2[0]) return 1;
+                return 0;               
+            }
+
+        });
+
+        int N = 1;
+
+        while(N < yWide.size())
+            N *= 2;
+
+
+        long[] wide = new long[N*2]; //개별 idx의 총 넓이
+        long[] store = new long[N*2]; //특정 idx가 포함하는 현재 총 넓이
+        long[] cover = new long[N*2]; //특정 idx의 중복값. 사각형마다 plus 됨.
+
+        for(int i = N; i < 2*N; i++) {
+            if(i - N < yWide.size())
+                wide[i] = yWide.get(i-N);
+        }
+        for(int i = N-1; i > 0; i --) {
+            wide[i] = wide[2*i] + wide[2*i+1];
+        }
+
+        long total = 0;
+
+        long prev = rec[0][0];
+
+        for(int i = 0; i < rec.length; i ++) {
+
+            if(i > 0) {
+                total += (rec[i][0] - prev) * store[1];
+            }
+            prev = rec[i][0];
+
+
+            int delta = -1;
+            if(rec[i][3] == 1) delta = 1;
+
+            int start = yIdx.get(rec[i][1]);
+            int end = yIdx.get(rec[i][2]);
+
+            change(wide,store,cover,start,end,delta);
+
+        }
+
+        return total;
+
+    }
+
+    public void change(long[] wide, long[] store, long[] cover, int i, int k, int delta) {
+
+        _change(wide, store, cover, 1, 0, wide.length / 2, i, k, delta);
+
+    }  
+
+    public void _change(long[] wide, long[] store, long[] cover, int r, int start, int m, int i, int k, int delta) {
+        int N = wide.length / 2;
+        if(start + m <= i || k <= start) return;
+        if(i <= start && start + m <= k)
+            cover[r] += delta;
+        else {
+            _change(wide, store, cover, 2 * r, start, m / 2, i, k, delta);
+            _change(wide, store, cover, 2 * r + 1, start + m / 2, m/2, i, k, delta);
+        }
+        if(cover[r] == 0) {
+            if(r >= N)
+                store[r] = 0;
+            else
+                store[r] = store[r*2] + store[r*2+1];
+        }
+        else
+            store[r] = wide[r];
+    }  
+
+
+}
