@@ -1,0 +1,106 @@
+import java.util.*;
+import java.awt.*;
+
+class Solution {
+    class Line implements Comparable<Line>{
+        int sx;
+        int sy;
+        int ey;
+        boolean end;
+        public Line(int sx, int sy, int ey, boolean end){
+            this.sx = sx;
+            this.sy = sy;
+            this.ey = ey;
+            this.end = end;
+        }//Line.
+        @Override
+        public int compareTo(Line l){
+            return this.sx - l.sx;
+        }
+    }//class Line.
+    
+    class Tree{
+		long[][] tree;
+		int memory = 1;
+		public Tree(int N, ArrayList<Integer> list){
+            while(memory<(N*2)){
+                memory *=2;
+            }
+            this.tree = new long[memory][3]; //0:합 1:크기 2:cnt.
+            for(int i=1; i<list.size(); i++){
+                this.tree[memory/2+i-1][1] = list.get(i) - list.get(i-1);
+            }
+        }//Tree Constructor. 
+		
+		public void update(int left, int right, boolean flag) {
+            if(left==right){
+                int now = left;
+                boolean change = false; 
+                if(!flag) {
+                    if(this.tree[now][2]==0L){
+                        change = true;
+                        this.tree[now][0] = this.tree[now][1];
+                    }
+                    this.tree[now][2]++;
+                }
+                else{
+                    this.tree[now][2]--;
+                    if(this.tree[now][2]==0) {
+                        change = true;
+                        this.tree[now][0] = 0L;
+                    }
+                }
+                if(change){
+                    now /= 2;
+                    while (now >= 1) {
+	                    this.tree[now][0] = this.tree[now * 2][0] + this.tree[now * 2 + 1][0];
+	                    now /= 2;
+	                }
+                }//값이 바뀐경우.
+                return;
+            }
+            int mid = (left+right)/2;
+            update(left,mid,flag);
+            update(mid+1,right,flag);
+		}//vertex가 바뀜에 따른 그 상위 노드들의 값을 변경해주는 것을 의미함.
+	}//Tree 구현.
+    
+    static HashMap<Integer, Integer> ptoi = new  HashMap<Integer, Integer>();
+    
+    public long solution(int[][] rectangles) {
+        long answer = 0L;
+        
+        ArrayList<Line> list = new ArrayList<Line>();
+        HashMap<Integer,Boolean> y_map = new HashMap<Integer,Boolean>();
+        
+        for(int[] rectangle : rectangles){
+            list.add(new Line(rectangle[0],rectangle[1],rectangle[3],false));
+            list.add(new Line(rectangle[2],rectangle[1],rectangle[3],true));
+            y_map.put(rectangle[1],true);
+            y_map.put(rectangle[3],true);
+        }//end for.
+        Collections.sort(list);
+        
+        ArrayList<Integer> y_list = new ArrayList<Integer>();
+        for(int key : y_map.keySet()){
+            y_list.add(key);
+        }//end for.
+        Collections.sort(y_list);
+        
+        Tree t = new Tree(y_list.size()-1 , y_list);
+        int length = t.tree.length;
+        for(int i=0; i<y_list.size(); i++){
+            ptoi.put(y_list.get(i) , length/2 + i);
+        }//end for.
+        
+        int prev = 0;
+        for(int i=0; i<list.size(); i++){
+            Line l = list.get(i);
+            answer += (l.sx - prev) * t.tree[1][0];
+            t.update(ptoi.get(l.sy),ptoi.get(l.ey)-1,l.end);  
+            prev = l.sx;
+        }//end for.
+        
+        return answer;
+    }//end main.
+}//end solution.
