@@ -1,0 +1,81 @@
+import java.util.*;
+
+class Solution {
+    static int[] memo;
+    static HashMap<Integer, HashMap<Integer, Integer>> map;
+    
+    public long[] solution(int n, int z, int[][] roads, long[] queries) {
+        memo = new int[z*z]; //w는 z보다 작으니 z*z만큼을 가지고 놀면 된다.
+        map = new HashMap<Integer, HashMap<Integer, Integer>>();
+        for(int i=0; i<n; i++){
+            HashMap<Integer,Integer> tmp_map = new HashMap<Integer,Integer>();
+            tmp_map.put(i,z);
+            map.put(i,tmp_map);
+        }//i에서 i가는데 z만큼 드는 비용 입력하기.
+        for(int[] road : roads){
+            map.get(road[1]).put(road[0],road[2]);
+        }//road에 적힌대로 입력하기.
+        
+        initialize(n,z); //memo 배열 채우기.
+        
+        long[] answer = new long[queries.length];
+        int top = -1;
+        for(long query : queries){
+            int now = (int)(query%z);
+            long rotate = query/z;
+            long min = Long.MAX_VALUE;
+            while(rotate >=0 && now < z*z){
+                if(memo[now]!=-1){
+                    min = min > rotate + memo[now] ? rotate + memo[now] : min;
+                }//만들수있는경우를 찾은경우.
+                now += z;
+                rotate--;
+                //현재 값을 z만큼 증가시키면 rotate는 감소한다.
+            }//end while.
+            if(min==Long.MAX_VALUE) answer[++top] = -1;
+            else answer[++top] = min;
+        }//end for.
+        return answer;
+    }//end main.
+    
+    private void initialize(int n, int z){
+        int[][]dp = new int[n][z*z]; //n노드로끝나면서 현재까지 cost만큼 만드는데 걸린 거리.
+        for(int i=0; i<n; i++){
+            for(int j=0; j<z*z; j++){
+                dp[i][j] = -1;
+            }//end for2.
+        }//end for1.
+        
+        dp[0][0] = 0; //초기값 세팅.
+        
+        for(int cost = 0; cost <z*z; cost++){
+            int min = -1;
+            for(int node=0; node<n; node++){
+                HashMap<Integer,Integer> now_map = map.get(node);
+                for(int key : now_map.keySet()){
+                    int now = now_map.get(key);
+                    int prev = cost - now;
+                    if(prev>=0 && dp[key][prev] != -1){
+                        if(dp[node][cost] == -1 || dp[key][prev] + 1 < dp[node][cost]){
+                            dp[node][cost] = dp[key][prev] + 1;
+                        }
+                    }
+                }//end for3.
+                if(dp[node][cost] != -1) {
+                    if (min == -1 || min > dp[node][cost]) {
+                        min = dp[node][cost];
+                    }
+                }//현재 cost를 만드는데 최소경로값을 저장.
+            }//end for2.
+            //최솟값을 구했으면, 순간이동을 통한 업데이트도 필요하다.
+            if(min != -1){
+                for(int node=0; node<n; node++){
+                    if(dp[node][cost] == -1 || min+1 < dp[node][cost]){
+                        dp[node][cost] = min+1;
+                    }
+                }
+            }
+            memo[cost] = min;
+        }//end for1.
+    }//end initialize.
+}//end solution.
