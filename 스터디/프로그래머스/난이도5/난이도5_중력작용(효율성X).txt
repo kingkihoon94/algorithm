@@ -1,0 +1,77 @@
+import java.util.*;
+
+class Solution {
+    
+    static int[] parent;
+    static int[] value_list;
+    static long[] sum_list;
+    static boolean[] visited;
+    static ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
+    
+    public long[] solution(int[] values, int[][] edges, int[][] queries) {
+        visited = new boolean[values.length+1];
+        parent = new int[values.length+1];
+        value_list = new int[values.length+1];
+        sum_list = new long[values.length+1];
+        
+        list.add(new ArrayList<Integer>());
+        for(int i=1; i<parent.length; i++){
+            value_list[i] = values[i-1]; //현재 idx node와 맞춘다.
+            list.add(new ArrayList<Integer>());
+        }//end for.
+    
+        for(int[] edge: edges){
+            list.get(edge[0]).add(edge[1]);
+            list.get(edge[1]).add(edge[0]);
+        }//end for.
+        
+        dfs(1,1);
+        initialize(1);
+        
+        ArrayList<Long> answer_list = new ArrayList<Long>();
+        for(int[] query : queries){
+            if(query[1] == -1) answer_list.add(sum_list[query[0]]);
+            else {
+                change(query[0], (long)value_list[query[0]], query[1]);
+            }
+        }
+        long[] answer = new long[answer_list.size()];
+        for(int i=0; i<answer.length; i++){
+            answer[i] = answer_list.get(i);
+        }//end ArrayList to Array.
+        return answer;
+    }//end main.
+
+    private void dfs(int prev, int now){
+        parent[now] = prev;
+        visited[now] = true;
+        for(int i=0; i<list.get(now).size(); i++){
+            int next = list.get(now).get(i);
+            if(!visited[next]) dfs(now,next);
+        }//end for.
+    }//end dfs.
+    
+    private long initialize(int node){
+        long sum = 0L;
+        ArrayList<Integer> tmp = list.get(node);
+        if(tmp.size() == 1 && node != 1) return sum_list[node] = (long)value_list[node];
+        for(int i=0; i<tmp.size(); i++){
+            if(tmp.get(i) == parent[node]) continue;
+            sum += initialize(tmp.get(i));
+        }
+        return sum_list[node] = sum + (long)value_list[node];
+    }//end initialize.
+
+    private void change(int node , long diff, int weight){
+        if(node == parent[node]){
+            value_list[node] = weight;
+            sum_list[node] += (long)value_list[node] - diff;
+            return;
+        }
+        value_list[node] = value_list[parent[node]];
+        sum_list[node] += value_list[node] - diff;
+        change(parent[node] , diff, weight);
+    }//end change. 
+    
+}//end solution.
+//우선 segment Tree를 사용하면 될 것 같지만? 이 트리가 완전이진트리가 아닐 수 있으므로 생각을 한 번 더 해야된다.
