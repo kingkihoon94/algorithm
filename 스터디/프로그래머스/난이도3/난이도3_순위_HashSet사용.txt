@@ -1,0 +1,53 @@
+import java.util.*;
+
+class Solution {
+    class Player{
+        int no;
+        HashSet<Integer> win_list = new HashSet<Integer>();
+        HashSet<Integer> lose_list = new HashSet<Integer>();
+        public Player(int no){
+            this.no = no;
+        }
+    }//class Player.
+    
+    public int solution(int n, int[][] results) {
+        ArrayList<Player> player_list = new ArrayList<Player>();
+        for(int i=0; i<=n; i++){
+            player_list.add(new Player(i));
+        }//Player 넘버링.
+        for(int[] result : results){
+            player_list.get(result[0]).win_list.add(result[1]);
+            player_list.get(result[1]).lose_list.add(result[0]);
+        }//end for.
+        
+        HashSet<Integer> tmpSet = new HashSet<Integer>();
+        for(int time=0; time<n; time++){
+            for(int idx=1; idx<player_list.size(); idx++){
+                Player p = player_list.get(idx);
+                tmpSet = new HashSet<Integer>();
+                for(int win : p.win_list){
+                    for(int winwin : player_list.get(win).win_list){
+                        tmpSet.add(winwin);
+                    }
+                }
+                p.win_list.addAll(tmpSet);
+                tmpSet = new HashSet<Integer>();
+                for(int lose : p.lose_list){
+                    for(int loselose : player_list.get(lose).lose_list){
+                        tmpSet.add(loselose);
+                    }
+                }
+                p.lose_list.addAll(tmpSet);
+            }//end for2.
+        }//end for1.
+        
+        int answer = 0;
+        
+        for(int idx=1; idx<player_list.size(); idx++){
+            Player p = player_list.get(idx);
+            if(p.win_list.size() + p.lose_list.size() == n-1) answer++;
+        }//end for.
+        
+        return answer;
+    }//end main.
+}//end class.
