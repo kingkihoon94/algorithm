@@ -1,0 +1,41 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int n, int[][] edge) {
+        boolean[] visited = new boolean[n+1];
+        ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
+        for(int i=0; i<=n; i++){
+            list.add(new ArrayList<Integer>());
+        }//end for.
+        for(int[] e : edge){
+            list.get(e[0]).add(e[1]);
+            list.get(e[1]).add(e[0]);
+        }//end for.
+        
+        ArrayList<Integer> now_vertex = new ArrayList<Integer>();
+        now_vertex.add(1);
+        visited[1] = true;
+        int answer = 0;
+        
+        while(true){
+            ArrayList<Integer> next_vertex = new ArrayList<Integer>();
+            for(int i=0; i<now_vertex.size(); i++){
+                int vertex = now_vertex.get(i);
+                for(int j=0; j<list.get(vertex).size(); j++){
+                    int next = list.get(vertex).get(j);
+                    if(!visited[next]){
+                        visited[next] = true;
+                        next_vertex.add(next);
+                    }
+                }//end for2.
+            }//end for1.
+            if(next_vertex.size() == 0) {
+                answer = now_vertex.size();
+                break;
+            }
+            now_vertex = next_vertex;
+        }//end while.
+        
+        return answer;
+    }//end main.
+}//end solution.
