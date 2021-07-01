@@ -1,0 +1,34 @@
+import java.util.*;
+
+class Solution {
+    static int INF = 987654321;
+    public int solution(int n, int m, int[][] edge_list, int k, int[] gps_log) {
+        ArrayList<ArrayList<Integer>> list = new ArrayList<ArrayList<Integer>>();
+        for(int i=0; i<=n; i++) {
+            list.add(new ArrayList<Integer>());
+        }//initialize.
+        for(int[] edge : edge_list) {
+            list.get(edge[0]).add(edge[1]);
+            list.get(edge[1]).add(edge[0]);
+        }//양방향 그래프 인풋.
+        
+        int dp[][] = new int[k][n+1]; //dp 사용해서 풀기.
+        for(int i=0; i<k; i++) {
+            Arrays.fill(dp[i], INF);
+        }
+        dp[0][gps_log[0]] = 0; //시작점은 오류가 없다.
+        
+        for(int i=1; i<k; i++) {
+            for(int j=1; j<=n; j++) {
+                dp[i][j] = dp[i-1][j]; //이전 값 불러오기.
+                for(int node : list.get(j)) {
+                    dp[i][j] = Math.min(dp[i-1][node], dp[i][j]);
+                }//해당 노드와 연결된 정점에서 오는 최소 변경 비용을 구한후.
+                if(dp[i][j] != INF) dp[i][j] += gps_log[i] == j ? 0 : 1; 
+                //해당 정점으로 오는데 걸린 최소 수정비용에서 현재 gps_log와 비교를 통해 수정값을 더해준다.
+            }//end for2.
+        }//end for1.
+
+        return dp[k-1][gps_log[k-1]] == INF ? -1 : dp[k-1][gps_log[k-1]];
+    }//end main.
+}//end solution.
