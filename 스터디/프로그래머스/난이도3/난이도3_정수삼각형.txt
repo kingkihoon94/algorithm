@@ -1,0 +1,29 @@
+class Solution {
+    public int solution(int[][] triangle) {
+        int[] prev = new int[1];
+        prev[0] = triangle[0][0];
+        
+        for(int row=1; row<triangle.length; row++){
+            
+            int[] list = triangle[row];
+            int[] now = new int[list.length];
+            
+            for(int i=0; i<now.length; i++){
+                if(i==0) now[i] = prev[0] + list[i];
+                else if(i==now.length-1) now[i] = prev[i-1] + list[i];
+                else now[i] = Math.max(prev[i-1] , prev[i]) + list[i];
+            }//end for2.
+            
+            prev = now;
+            
+        }//end for1.
+        
+        int answer = 0;
+        
+        for(int i=0; i<prev.length; i++){
+            answer = answer < prev[i] ? prev[i] : answer;
+        }//end for.
+        
+        return answer;
+    }//end main.
+}//end solution.
