@@ -1,0 +1,55 @@
+import java.util.*;
+
+class Solution {
+    static HashMap<String,String> map = new HashMap<String,String>();
+    
+    public int solution(String s) {
+        map.put("zero" , "0");
+        map.put("one" , "1");
+        map.put("two" , "2");
+        map.put("three" , "3");
+        map.put("four" , "4");
+        map.put("five" , "5");
+        map.put("six" , "6");
+        map.put("seven" , "7");
+        map.put("eight" , "8");
+        map.put("nine" , "9");
+        
+        int top = 0;
+        String num = "";
+        for(int i=0; i<s.length(); i++){
+            if(s.charAt(i)>='0' && s.charAt(i)<='9'){
+                num += StringToNumber(s.substring(top,i));
+                num += s.charAt(i);
+                top = i+1;
+            }
+        }
+        num += StringToNumber(s.substring(top,s.length()));
+        int answer = Integer.parseInt(num);
+        return answer;
+    }//end main.
+    
+    private String StringToNumber(String s){
+        if(s.length()==0) return "";
+        String num = "";
+        int now_length = 0;
+        if(map.containsKey(s.substring(0,3))){
+            num += map.get(s.substring(0,3));
+            now_length = 3;
+        }
+        else if(map.containsKey(s.substring(0,4))){
+            num += map.get(s.substring(0,4));
+            now_length = 4;
+        }
+        else{
+            num += map.get(s.substring(0,5));
+            now_length = 5;
+        }
+        if(s.length() > now_length){
+            num += StringToNumber(s.substring(now_length,s.length()));
+        }
+        
+        return num;
+    }//end StringToNumber.
+    
+}//end solution.
