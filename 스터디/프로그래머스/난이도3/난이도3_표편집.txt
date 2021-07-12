@@ -1,0 +1,41 @@
+import java.util.*;
+
+class Solution {
+    
+    public String solution(int n, int k, String[] cmd) {
+
+        Stack<Integer> stack = new Stack<Integer>();
+        int size = n;
+        int pointer = k;
+        
+        for(String order : cmd){
+            if(order.length()!=1){
+                String[] orderList = order.split(" ");
+                if(orderList[0].equals("U")) pointer -= Integer.parseInt(orderList[1]);
+                else pointer += Integer.parseInt(orderList[1]);
+            }//포인터 이동 명령.
+            else{
+                if(order.charAt(0) == 'C'){
+                    stack.push(pointer);
+                    size--;
+                    if(pointer == size) pointer--;
+                }//제거 명령.
+                else{
+                    int idx = stack.pop();
+                    if(idx<=pointer) pointer++;
+                    size++;
+                }//복구 명령.
+            }//제거 또는 복구 명령.
+        }//end for.
+        
+        StringBuilder sb = new StringBuilder();
+        for(int i=0; i<size; i++){
+            sb.append("O"); //스택사이즈만큼 빠진 총 갯수만큼 O로 일단 채우기.
+        }//end for.
+        while(!stack.isEmpty()){
+            int idx = stack.pop();
+            sb.insert(idx,"X"); //해당 포인터가 가르키는곳에 X추가하기.
+        }
+        return sb.toString();
+    }//end main.
+}//end solution.
