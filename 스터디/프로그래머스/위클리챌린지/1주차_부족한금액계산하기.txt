@@ -1,0 +1,8 @@
+class Solution {
+    public long solution(int price, int money, int count) {
+        long totalPrice = (long)(count * (count+1)) / 2 * price;
+        long answer = totalPrice - (long)money;
+        if(answer<=0L) answer = 0L;
+        return answer;
+    }//end main.
+}//end solution.
