@@ -1,0 +1,49 @@
+class Solution {
+    public String solution(int[][] scores) {
+        String answer = "";
+        for(int num=0; num<scores.length; num++){
+            int total = 0;
+            int cnt = scores.length;
+            int myScore = 0;
+            int max = -1;
+            int max_cnt = 0;
+            int min = 101;
+            int min_cnt = 0;
+            for(int target=0; target<scores[0].length; target++){
+                int score = scores[target][num];
+                total += score;
+                if(num == target) myScore = score;
+                if(max<score){
+                    max = score;
+                    max_cnt = 1;
+                }
+                else if(max==score) max_cnt++;
+                if(min>score){
+                    min = score;
+                    min_cnt = 1;
+                }
+                else if(min==score) min_cnt++;
+            }
+            if(max == myScore && max_cnt == 1){
+                total -= myScore;
+                cnt--;
+            }//유일한 최고점일 경우.
+            else if(min == myScore && min_cnt == 1){
+                total -= myScore;
+                cnt--;
+            }//유일한 최저점일 경우.
+            double avg = (double)total/cnt;
+            answer += itos(avg);
+        }//end for.
+        return answer;
+    }//end class.
+    
+    private static String itos(double avg){
+        if(avg>=90) return "A";
+        else if(avg>=80) return "B";
+        else if(avg>=70) return "C";
+        else if(avg>=50) return "D";
+        else return "F";
+    }//end itos.
+    
+}//end main.
