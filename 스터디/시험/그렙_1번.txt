@@ -1,0 +1,68 @@
+import java.util.*;
+
+class Solution {
+    static int N;
+    static int M;
+    static boolean[] eraseIdx;
+
+    public int[] solution(int n, int[][] edges) {
+        N = n;
+        M = N-1;
+        eraseIdx = new boolean[M];
+        
+        int[] answer = new int[2];
+        
+ex:     for(int i=0; i<M-1; i++){
+            eraseIdx[i] = true;
+            for(int j=i+1; j<M; j++){
+                eraseIdx[j] = true;
+                if(solve(edges)){
+                    answer[0] = i;
+                    answer[1] = j;
+                    break ex;
+                }
+                eraseIdx[j] = false;
+            }//end for2.
+            eraseIdx[i] = false;
+        }//end for1.
+        
+        return answer;
+    }//end class.
+    
+    private static boolean solve(int[][] edges){
+        boolean[] selected = new boolean[N]; //노드 체크배열.
+        
+        boolean[][] bridge = new boolean[N][N];
+        
+        for(int i=0; i<M; i++){
+            if(!eraseIdx[i]){
+                int node1 = edges[i][0];
+                int node2 = edges[i][1];
+                bridge[node1][node2] = true;
+                bridge[node2][node1] = true;
+            }
+        }
+        
+        for(int node=0; node<N; node++){
+            if(!selected[node]){
+                Queue<Integer> q = new LinkedList<Integer>();
+                selected[node] = true;
+                q.add(node);
+                int size = 0;
+                while(!q.isEmpty()){
+                    size++;
+                    int now = q.poll();
+                    for(int next=0; next<N; next++){
+                        if(bridge[now][next] && !selected[next]){
+                            selected[next] = true;
+                            q.add(next);
+                        }
+                    }
+                }//end bfs.
+                if(size != N/3) return false;
+            }//아직 방문 안한 노드일경우 bfs를 시작한다.
+        }//end for1.
+        return true;
+    }//end solve.
+    
+}//end solution.
