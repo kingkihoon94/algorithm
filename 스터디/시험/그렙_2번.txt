@@ -1,0 +1,32 @@
+class Solution {
+    static int div = 1000007;
+    static int[][] memo;
+    public int solution(int n, int m, int k) {
+        memo = new int[n+1][m+1];
+        for(int i=0; i<=n; i++){
+            for(int j=0; j<=m; j++){
+                for(int l=0; l<=k; l++){
+                    memo[i][j] = -1;
+                }//end for3.
+            }//end for2.
+        }//end for1. (end initialize.)
+        
+        int answer = topDown(n,m,k);
+        return answer;
+    }//end class.
+    private int topDown(int n, int m, int k){
+        if(memo[n][m] != -1) return memo[n][m];
+        else if(n==1){
+            if(m>k) return memo[n][m] = 0;
+            else return memo[n][m] = 1;
+        }//차선 1개 남았을경우 만들 수 있는 지 없는 지 판별.
+        
+        int cnt = 0;
+        for(int now=1; now<=k; now++){
+            if(m-now < 1) break;
+            cnt += topDown(n-1,m-now,k);
+            cnt %= div;
+        }
+        return memo[n][m] = cnt;
+    }//end topDown.
+}//end solution.

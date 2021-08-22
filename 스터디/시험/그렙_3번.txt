@@ -1,0 +1,75 @@
+import java.util.*;
+
+class Solution {
+    
+    class Status implements Comparable<Status>{
+        int idx;
+        int time;
+        int mileage;
+        public Status(int idx, int time, int mileage){
+            this.idx = idx;
+            this.time = time;
+            this.mileage = mileage;
+        }//Constructor.
+        @Override
+        public int compareTo(Status s){
+            if(this.time == s.time){
+                return s.mileage - this.mileage;
+            }//time이 같은경우 마일리지 많은 경우 우선순위 Up.
+            else return this.time - s.time; //time이적은경우 우선순위 Up.
+        }//Override compareTo.
+    }//class Status.
+    
+    
+    public int[] solution(int n, int k, int[][] paths) {
+        
+        int[] timeList = new int[n+1];
+        int[] mileageList = new int[n+1];
+        for(int i=0; i<=n; i++){
+            timeList[i] = Integer.MAX_VALUE;
+        }//end for1. (i에서 j 가는 경로의 최단시간을 저장)
+        
+        ArrayList<ArrayList<Status>> list = new  ArrayList<ArrayList<Status>>();
+        for(int i=0; i<=n; i++){
+            list.add(new ArrayList<Status>());
+        }//end for1. (end initialize)
+        
+        for(int[] path : paths){
+            list.get(path[0]).add(new Status(path[1],path[2],path[3]));
+            list.get(path[1]).add(new Status(path[0],path[2],path[3]));
+        }//end for1. (경로 값 채워주기)
+        
+        int[] answer = new int[2];
+        
+        PriorityQueue<Status> pq = new PriorityQueue<Status>();
+        timeList[1] = 0;
+        pq.add(new Status(1,0,0)); //처음 1번에서 시작 가지고 있는 시간 0 , 가지고 있는 마일리지 0.
+        while(!pq.isEmpty()){
+            Status now = pq.poll();
+            if(timeList[now.idx] < now.time) continue;
+            else if(timeList[now.idx] == now.time && now.mileage < mileageList[now.idx]) continue; 
+            if(now.idx == k){
+                answer[0] = now.time;
+                answer[1] = now.mileage;
+                break;
+            }//k 공항에 도착하는 경우 조건처리.
+            
+            for(int i=0; i<list.get(now.idx).size(); i++){
+                Status next = list.get(now.idx).get(i);
+                if(now.time+next.time < timeList[next.idx]){
+                    timeList[next.idx] = now.time+next.time;
+                    mileageList[next.idx] = now.mileage + next.mileage;
+                    pq.add(new Status(next.idx, now.time+next.time , now.mileage + next.mileage));
+                }//시간이 더 적게 갱신되는 경우.
+                else if(now.time+next.time == timeList[next.idx]){
+                    if(now.mileage + next.mileage > mileageList[next.idx]){
+                        mileageList[next.idx] = now.mileage + next.mileage;
+                        pq.add(new Status(next.idx, now.time+next.time , now.mileage + next.mileage));
+                    }
+                }//시간은 같으나 마일리지가 더 많이 쌓이게 갱신되는 경우.
+            }//end for.
+        }//end while.
+        
+        return answer;
+    }//end class.
+}//end solution.
