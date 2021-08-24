@@ -1,0 +1,51 @@
+import java.util.*;
+import java.io.*;
+
+class Solution {
+    
+    static ArrayList<HashMap<String,Integer>> tableMap = new ArrayList<HashMap<String,Integer>>();
+    static HashMap<Integer,String> itos = new HashMap<Integer,String>();
+    
+    public String solution(String[] table, String[] languages, int[] preference) {
+        StringTokenizer st;
+        int idx = 0;
+        for(String line : table){
+            tableMap.add(new HashMap<String,Integer>());
+            st = new StringTokenizer(line);
+            String job = st.nextToken();
+            itos.put(idx, job);
+            int score = 5;
+            while(st.hasMoreTokens()){
+                String techStack = st.nextToken();
+                tableMap.get(idx).put(techStack, score--);
+            }//end while.
+            idx++;
+        }//end for1.
+        
+        int maxScore = 0;
+        int answerIdx = 0;
+        
+        for(int job=0; job<idx; job++){
+            HashMap<String,Integer> now = tableMap.get(job);
+            int nowScore = 0;
+            for(int i=0; i<languages.length; i++){
+                String language = languages[i];
+                if(now.containsKey(language)) nowScore += now.get(language) * preference[i];
+            }//end for2.
+            if(maxScore < nowScore){
+                maxScore = nowScore;
+                answerIdx = job;
+            }
+            else if(maxScore == nowScore) answerIdx = dictionary(answerIdx , job);
+        }//end for1.
+        
+        return itos.get(answerIdx);
+    }//end class.
+    private int dictionary(int num1, int num2){
+        String job1 = itos.get(num1);
+        String job2 = itos.get(num2);
+        int dict =  job1.compareTo(job2);
+        if(dict > 0) return num2;
+        else return num1;
+    }//end dictionary
+}//end solution.
