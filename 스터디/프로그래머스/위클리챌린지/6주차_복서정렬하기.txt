@@ -1,0 +1,62 @@
+import java.util.*;
+
+class Solution {
+    class Boxer implements Comparable<Boxer>{
+        int idx;
+        int weight;
+        double winRate;
+        int overWin;
+        public Boxer(int idx, int weight, double winRate, int overWin){
+            this.idx = idx;
+            this.weight = weight;
+            this.winRate = winRate;
+            this.overWin = overWin;
+        }//Constructor.
+        @Override
+        public int compareTo(Boxer b){
+            if(this.winRate == b.winRate) {
+                if(this.overWin == b.overWin) {
+                    if(this.weight == b.weight) return this.idx - b.idx;
+                    else return b.weight - this.weight;
+                }
+                else return b.overWin - this.overWin;
+            }
+            else if(this.winRate < b.winRate) return 1;
+            else return -1;
+        }//Override compareTo.
+    }//class Boxer.
+    
+    public int[] solution(int[] weights, String[] head2head) {
+        PriorityQueue<Boxer> pq = new PriorityQueue<Boxer>();
+        
+        for(int i=0; i<weights.length; i++){
+            int totalCnt = 0;
+            int winCnt = 0;
+            int loseCnt = 0;
+            int overWin = 0;
+            String scoreList = head2head[i];
+            for(int j=0; j<scoreList.length(); j++){
+                char result = scoreList.charAt(j);
+                if(result == 'W'){
+                    totalCnt++;
+                    winCnt++;
+                    if(weights[i] < weights[j]) overWin++;
+                }//이긴 경우.
+                else if(result == 'L'){
+                   totalCnt++;
+                    loseCnt++;
+                }//진 경우.
+            }//end for2.
+            double winRate = 0L;
+            if(totalCnt != 0) winRate = (double) winCnt / totalCnt;
+            pq.add(new Boxer(i+1,weights[i],winRate,overWin));
+        }//end for1.
+        
+        int[] answer = new int[weights.length];
+        for(int i=0; i<answer.length; i++){
+            Boxer boxer = pq.poll();
+            answer[i] = boxer.idx;
+        }
+        return answer;
+    }//end class.
+}//end solution.
