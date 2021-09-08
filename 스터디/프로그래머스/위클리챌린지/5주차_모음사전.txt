@@ -1,0 +1,33 @@
+import java.util.*;
+
+class Solution {
+    static HashMap<Character, Integer> ctoi = new HashMap<Character, Integer>();
+    static HashMap<Integer, Integer> idxToCnt = new HashMap<Integer, Integer>();
+    public int solution(String word) {
+        
+        int idx = 4; //마지막 자리 4 (0부터 시작).
+        int diff = 1; //마지막 자리 4인곳에서 차이만큼 1씩 순서 증가.
+        while(idx>=0){
+            idxToCnt.put(idx,diff);
+            idx--;
+            diff = diff * 5 + 1;
+        }//end while.
+        
+        ctoi.put('A' , 0);
+        ctoi.put('E' , 1);
+        ctoi.put('I' , 2);
+        ctoi.put('O' , 3);
+        ctoi.put('U' , 4);
+        
+        
+        int answer = 0;
+        
+        answer += word.length();
+        for(int i=0; i<word.length(); i++){
+            char c = word.charAt(i);
+            answer += ctoi.get(c) * idxToCnt.get(i);
+        }//end for.
+        
+        return answer;
+    }//end class.
+}//end solution.
