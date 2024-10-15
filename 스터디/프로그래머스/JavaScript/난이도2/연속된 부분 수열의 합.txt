@@ -1,0 +1,37 @@
+function solution(sequence, k) {
+
+    let length = sequence.length;
+
+    const sumArray = new Array(length).fill(0)
+
+    sumArray[0] = sequence[0];
+    for(let i=1; i<length; i++){
+        sumArray[i] = sumArray[i-1] + sequence[i];
+    }
+
+    let leftFlag = 0;
+    let rightFlag = 0;
+    let subLength = 1000001;
+
+    let sIndex = -1;
+    let eIndex = -1;
+
+    while(true){
+        if(rightFlag >= length || leftFlag > rightFlag) break;
+        const  currentSum = sumArray[rightFlag] - sumArray[leftFlag] + sequence[leftFlag];
+        if(currentSum < k) {
+            rightFlag++;
+        } else {
+            if(currentSum === k){
+                if(subLength > rightFlag - leftFlag + 1){
+                    subLength = rightFlag - leftFlag + 1;
+                    sIndex = leftFlag;
+                    eIndex = rightFlag;
+                }
+            }
+            leftFlag++;
+        }
+    }
+
+    return [sIndex, eIndex];
+}
