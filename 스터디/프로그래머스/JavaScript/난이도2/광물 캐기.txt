@@ -1,0 +1,78 @@
+function solution(picks, minerals) {
+
+    const costArray = {
+        stone: {
+            stone: 1,
+            iron: 5,
+            diamond: 25
+        },
+        iron: {
+            stone: 1,
+            iron: 1,
+            diamond: 5
+        },
+        diamond: {
+            stone:1,
+            iron:1,
+            diamond:1
+        }
+    }
+
+    let dpArray = new Array(11).fill(null).map(() =>
+        new Array(6).fill(null).map(() =>
+            new Array(6).fill(null).map(() =>
+                new Array(6).fill(0)
+            )
+    ));
+
+    const picksCount = picks.reduce((a, b) => a + b, 0);
+
+
+    minerals = 5 * picksCount > minerals.length ? minerals : minerals.slice(0, 5 * picksCount);
+
+    const sectionCount = Math.floor(minerals.length / 5);
+    const firstSectionLength = minerals.length - 5 * sectionCount;
+
+
+    for(let i=0; i<=sectionCount; i++){
+        const startPoint = minerals.length - firstSectionLength - (i*5);
+        const currentMinerals = i ===0 ? minerals.slice(startPoint, startPoint + firstSectionLength): minerals.slice(startPoint, startPoint+5);
+        let cost1 = 0, cost2 = 0, cost3 = 0;
+        for(mineral of currentMinerals) {
+            cost1 += costArray["diamond"][mineral];
+            cost2 += costArray["iron"][mineral];
+            cost3 += costArray["stone"][mineral];
+        }
+
+        if(i===0) {
+            for(let k1=0; k1<=5; k1++) {
+                for(let k2=0; k2<=5; k2++) {
+                    for (let k3=0; k3<=5; k3++){
+                        if(k1 !== 0) {
+                            dpArray[0][k1][k2][k3] = cost1;
+                        } else if(k2 !== 0) {
+                            dpArray[0][k1][k2][k3] = cost2;
+                        } else {
+                            dpArray[0][k1][k2][k3] = cost3;
+                        }
+
+                    }
+                }
+            }
+        } else {
+            for(let k1=0; k1<=5; k1++) {
+                for(let k2=0; k2<=5; k2++) {
+                    for (let k3=0; k3<=5; k3++){
+                        const c1 = k1 === 0 ? 100000 :  cost1 + dpArray[i-1][k1-1][k2][k3];
+                        const c2 = k2 === 0 ? 100000 :  cost2 + dpArray[i-1][k1][k2-1][k3];
+                        const c3 = k3 === 0 ? 100000 :  cost3 + dpArray[i-1][k1][k2][k3-1];
+                        const min = Math.min(c3, Math.min(c1, c2));
+                        dpArray[i][k1][k2][k3] = min;
+                    }
+                }
+            }
+        }
+    }
+    const answer = dpArray[sectionCount][picks[0]][picks[1]][picks[2]];
+    return answer;
+}
