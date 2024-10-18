@@ -1,0 +1,33 @@
+function solution(book_time) {
+
+    const getTime = (str) => {
+        const split = str.split(":");
+        return 60 * split[0] + Number(split[1]);
+    }//end getTime.
+
+    book_time.sort((a,b) => {
+        const startA = getTime(a[0]);
+        const startB = getTime(b[0]);
+        return startA - startB;
+    });// 시작 시간 기준 정렬.
+
+    for (let i = 0; i < book_time.length; i++) {
+        const start = getTime(book_time[i][0]);
+        const end = getTime(book_time[i][1]);
+        book_time[i] = [start, end + 10];
+    }//end for1.
+
+    let answer = 0;
+    let time = book_time[0][0];
+
+    while(time <= 1440) {
+        let room = 0;
+        for(book of book_time) {
+            if(book[0] <= time && time < book[1]) room++;
+        }
+        answer = Math.max(answer, room);
+        time++;
+    }//end whle.
+
+    return answer;
+}//end solution.
