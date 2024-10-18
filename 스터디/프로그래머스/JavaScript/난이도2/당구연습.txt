@@ -1,0 +1,33 @@
+function solution(m, n, startX, startY, balls) {
+    let answer = [];
+
+    const myBall = [startX ,startY];
+
+    for(ball of balls) {
+
+        let movedBall = [0,0];
+        let result = 10000000;
+
+        if(myBall[0] !== ball[0] || myBall[1] > ball[1]) { // 위쪽 벽 원쿠션 못하는 경우 제외.
+            movedBall = [ball[0], n+(n-ball[1])];
+            result = Math.min(result, Math.pow(myBall[0] - movedBall[0], 2) + Math.pow(myBall[1] - movedBall[1], 2));
+        }
+
+        if(myBall[0] !== ball[0] || myBall[1] < ball[1]) { // 아래쪽 벽 원쿠션 못하는 경우 제외.
+            movedBall = [ball[0], ball[1] * -1];
+            result = Math.min(result, Math.pow(myBall[0] - movedBall[0], 2) + Math.pow(myBall[1] - movedBall[1], 2));
+        }
+
+        if(myBall[1] !== ball[1] || myBall[0] > ball[0]) { // 오른쪽 벽 원쿠션 못하는 경우 제외.
+            movedBall = [m + (m - ball[0]), ball[1]];
+            result = Math.min(result, Math.pow(myBall[0] - movedBall[0], 2) + Math.pow(myBall[1] - movedBall[1], 2));
+        }
+
+        if(myBall[1] !== ball[1] || myBall[0] < ball[0]) { // 왼쪽 벽 원쿠션 못하는 경우 제외.
+            movedBall = [ball[0] * -1, ball[1]];
+            result = Math.min(result, Math.pow(myBall[0] - movedBall[0], 2) + Math.pow(myBall[1] - movedBall[1], 2));
+        }
+        answer.push(result);
+    }
+    return answer;
+}
