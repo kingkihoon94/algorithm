@@ -1,0 +1,74 @@
+function solution(maps) {
+
+    const getCost = (start, end) => {
+        const row = maps.length;
+        const col = maps[0].length;
+
+        const visited = Array.from({ length: row }, () => Array(col).fill(false));
+
+        const direction = [[-1,0], [1,0], [0,1], [0,-1]];
+        const queue = [];
+
+        visited[start[0]][start[1]] = true;
+        queue.push([start[0], start[1]]);
+
+        let cost = 0;
+
+        while(true) {
+            const length = queue.length;
+            if(length === 0) {
+                cost = -1;
+                break;
+            }
+
+            for(let k1=0; k1<length; k1++) {
+                const current = queue.shift();
+                console.log(current);
+                if(current[0] === end[0] && current[1] === end[1]) {
+                    return cost;
+                }
+
+                for(let i=0; i<4; i++) {
+                    const nx = current[0] + direction[i][0];
+                    const ny = current[1] + direction[i][1];
+
+                    if(nx>=0 && nx <row && ny>=0 && ny<col && !visited[nx][ny] && maps[nx][ny] !== 'X'){
+                        visited[nx][ny] = true;
+                        queue.push([nx,ny]);
+                    }
+                }//end for2.
+            }//end for1.
+
+            cost++;
+        }//end while.
+
+        return cost;
+    }//end getCost.
+
+
+    let start = [-1, -1];
+    let lever = [-1, -1];
+    let end = [-1,-1];
+
+    for(let i=0; i<maps.length; i++) {
+        for(let j=0; j<maps[0].length; j++) {
+            if(maps[i][j] === 'S') {
+                start = [i,j];
+            } else if(maps[i][j] === 'L') {
+                lever = [i,j];
+            } else if(maps[i][j] === 'E') {
+                end = [i,j];
+            }
+        }//end for2.
+    }//end for1.
+
+    const cost1 = getCost(start, lever);
+
+    if(cost1 === -1) return -1;
+
+    const cost2 = getCost(lever, end);
+
+    if(cost2 === -1) return -1;
+
+    return cost1 + cost2;
+}
