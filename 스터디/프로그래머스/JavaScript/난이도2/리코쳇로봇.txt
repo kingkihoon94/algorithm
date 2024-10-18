@@ -1,0 +1,56 @@
+function solution(board) {
+    const row = board.length;
+    const col = board[0].length;
+    const direction = [[-1,0], [1,0], [0,-1], [0,1]];
+    const visited = Array.from({ length: row }, () => Array(col).fill(false));
+    const queue = [];
+
+    for(let i=0; i<row; i++){
+        for(let j=0; j<col; j++){
+            if(board[i][j] === 'R') {
+                queue.push([i,j]);
+                visited[i][j] = true;
+            }
+        }//end for2.
+    }//end for1.
+
+
+
+    let count = 0;
+    let answer = -1;
+
+    while(true){
+        if(answer !== -1) break;
+
+        const currentQueueSize = queue.length;
+        if(currentQueueSize === 0) break;
+
+        for(let i=0; i<currentQueueSize; i++){
+            const item = queue.shift();
+            if(board[item[0]][item[1]] === 'G') {
+                answer = count;
+                break;
+            }
+
+            for(let k=0; k<4; k++) {
+                let sx = item[0];
+                let sy = item[1];
+                while(true){
+                    const nx = sx + direction[k][0];
+                    const ny = sy + direction[k][1];
+
+                    if(nx < 0 || nx >= row || ny < 0 || ny >= col || board[nx][ny] === 'D') break;
+                    sx = nx;
+                    sy = ny;
+                }//end while.
+                if(!visited[sx][sy]) {
+                    visited[sx][sy] = true;
+                    queue.push([sx,sy]);
+                }
+            }//end for2.
+        }//end for1.
+        count++;
+    }
+
+    return answer;
+}
