@@ -1,0 +1,45 @@
+function solution(users, emoticons) {
+    let answer = [0,0];
+
+    const disCountArray = [10, 20, 30, 40];
+
+    const dfs = (dArray, length) => {
+        if(length === 0) {
+            let plusUser = 0;
+            let totalPrice = 0;
+            for(user of users) {
+                let isPlus = false;
+                let price = 0;
+                for(let i=0; i<emoticons.length; i++){
+                    if(disCountArray[dArray[i]] >= user[0]) {
+                        price += emoticons[i] * (100 - disCountArray[dArray[i]]) / 100;
+                        if(price >= user[1]) {
+                            isPlus = true;
+                            break;
+                        }
+                    }//end if. 할인율이 맘에들어 결제하는경우.
+                }//end for2.
+
+                if(isPlus) {
+                    plusUser++;
+                } else {
+                    totalPrice += price;
+                }
+            }//end for1.
+            if(plusUser > answer[0]) {
+                answer = [plusUser, totalPrice];
+            } else if(plusUser === answer[0]){
+                answer = [plusUser, Math.max(answer[1], totalPrice)];
+            }
+            return;
+        }// 다 채워진 경우 값 구하기.
+
+        for(let k=0; k<4; k++) {
+            dfs([...dArray, k], length-1);
+        }//end for1.
+    }//end dfs.
+
+    dfs([],emoticons.length); //dfs 로 완전탐색.
+
+    return answer;
+}//end solution.
