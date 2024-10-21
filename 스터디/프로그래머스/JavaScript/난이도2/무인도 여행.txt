@@ -1,0 +1,38 @@
+function solution(maps) {
+
+    const row = maps.length;
+    const col = maps[0].length;
+    const direction = [[-1,0],[1,0],[0,1],[0,-1]];
+
+    let visited = Array.from(Array(row), () => Array(col).fill(false));
+    let answer = [];
+
+    for(let i=0; i<row; i++) {
+        for(let j=0; j<col; j++) {
+            if(!visited[i][j] && maps[i][j] !== 'X') {
+                let count = 0;
+                const queue = [];
+                visited[i][j] = true;
+                queue.push([i,j]);
+                while(queue.length !== 0) {
+                    const [sx,sy] = queue.shift();
+                    count += Number(maps[sx][sy]);
+                    for(k=0; k<4; k++) {
+                        const nx = sx + direction[k][0];
+                        const ny = sy + direction[k][1];
+                        if(nx>=0 && nx<row && ny>=0 && ny<col && !visited[nx][ny] && maps[nx][ny] !== 'X') {
+                            visited[nx][ny] = true;
+                            queue.push([nx,ny]);
+                        }//end if.
+                    }//end for3.
+                }//end while.
+                answer.push(count);
+            }//end if.
+        }//end for2.
+    }//end for1.
+
+    if(answer.length === 0) return [-1];
+
+    answer.sort((a,b) => a-b);
+    return answer;
+}//end solution.
