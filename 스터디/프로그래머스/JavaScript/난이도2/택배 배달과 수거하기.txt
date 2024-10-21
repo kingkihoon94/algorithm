@@ -1,0 +1,22 @@
+function solution(cap, n, deliveries, pickups) {
+    let answer = 0;
+
+    let dCnt = 0;
+    let pCnt = 0;
+
+    for(let i=n-1; i>=0; i--){
+        dCnt += deliveries[i];
+        pCnt += pickups[i];
+
+        if(dCnt > 0 || pCnt > 0) {
+            const maxCnt = Math.max(dCnt, pCnt); // 현재 처리해야할 값이 많은 녀석 판별.
+            const cnt = Math.ceil(maxCnt / cap); // 그 값을 처리하는데 필요한 반복 횟수.
+            answer += 2 * (i+1) * cnt; // 반복 횟수 만큼 2 * (i+1) 왔다갔다해야하니 answer 에 누적.
+            dCnt -= cap * cnt; // 반복 횟수 만큼 dCnt 차감. 무조건 0보다 작거나 같은 값이 나오게됨.
+            pCnt -= cap * cnt; // 반복 횟수 만큼 pCnt 차감. 무조건 0보다 작거나 같은 값이 나오게됨.
+        }
+
+    }//end for1.
+
+    return answer;
+}//
