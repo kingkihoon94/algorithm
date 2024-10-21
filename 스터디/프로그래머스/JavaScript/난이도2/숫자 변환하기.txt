@@ -1,0 +1,26 @@
+// bfs 로도 풀어봤으나 왜인지 시간초과가 나는 테스트케이스가 존재함 (9번 /10번).
+// 그래서 dp로 풀이방법을 바꿈.
+function solution(x, y, n) {
+
+    let dpArray = new Array(1000001).fill(1000001);
+
+    dpArray[x] = 0;
+
+    for(let i=x ; i<y; i++) {
+        if(dpArray[x] === 1000001) continue; // 기존으로부터 만들어진적 없는 숫자면 패스.
+
+        if(i+n <= y) {
+            dpArray[i+n] = Math.min(dpArray[i+n] , dpArray[i] + 1);
+        }
+
+        if(i * 2 <= y) {
+            dpArray[i*2] = Math.min(dpArray[i*2] , dpArray[i] + 1);
+        }
+
+        if(i * 3 <= y) {
+            dpArray[i*3] = Math.min(dpArray[i*3] , dpArray[i] + 1);
+        }
+    }//end for1.
+
+    return dpArray[y] === 1000001 ? -1 : dpArray[y];
+}//end solution.
