@@ -1,0 +1,33 @@
+function solution(numbers) {
+
+    const numbersCopy = [...numbers];
+
+    let answer = new Array(numbers.length).fill(-1);
+    let indexArray = new Array(numbers.length).fill(-1);
+
+    for(let i=numbers.length-2; i>=0; i--){
+        const num1 = numbers[i];
+
+        let flag = i+1;
+
+        while(true) {
+            const num2 = numbers[flag];
+
+             if(num1 < num2) { // 뒷 큰수를 찾은경우.
+                 answer[i] = num2;
+                 indexArray[i] = flag;
+                 break;
+             } else {
+                 const nextIndex = indexArray[flag];
+                 if(nextIndex === -1) { //현재 비교한거보다 큰수가 더이상 뒤에 없는 경우.
+                     answer[i] = -1;
+                     break;
+                 }
+                 flag = nextIndex;
+             }
+        }//end while.
+    }//end for1.
+
+
+    return answer;
+}
