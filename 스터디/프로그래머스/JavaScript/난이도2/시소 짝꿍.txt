@@ -1,0 +1,30 @@
+function solution(weights) {
+    let answer = 0;
+
+    let countArray = new Array(1001).fill(0);
+    const weightSet = new Set();
+
+    for(weight of weights) {
+        countArray[weight]++;
+        weightSet.add(weight);
+    }//end for1.
+
+    const newArray = [...weightSet];
+    newArray.sort((a,b) => a-b);
+
+    for(let i=0; i<newArray.length; i++) {
+        const num1 = newArray[i];
+        const cntNum1 = countArray[num1];
+        answer += cntNum1 * (cntNum1-1) / 2; // 자기 자신들의 결합수.
+        for(let j=i+1; j<newArray.length; j++) {
+            const num2 = newArray[j];
+            if(num2 === num1 * 2 || num2 === num1 * (3/2) || num2 === num1 * (4/3)) {
+                const cntNum2 = countArray[num2];
+                answer += cntNum1 * cntNum2;
+            }
+        }//end for1.
+    }//end for2.
+
+
+    return answer;
+}//end solution.
