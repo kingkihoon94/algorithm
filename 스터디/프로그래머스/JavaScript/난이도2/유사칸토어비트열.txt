@@ -1,0 +1,24 @@
+function solution(n, l, r) {
+
+    let answer = 0;
+
+    const isVaild = (index) => {
+        if(index< 5) {
+            if(index === 2) return false;
+            return true;
+        }// 00000 구역 판별.
+
+        if((index-2) % 5 === 0) return false; // 11011 구역에서의 0 인 녀석 판별.
+
+        return isVaild(Math.floor(index/5));
+    }//end isValid.
+
+    for(let num = l; num<=r; num++) {
+        const numToIndex = num-1;
+        if(isVaild(numToIndex)){
+            answer++;
+        }
+    }//end for1.
+
+    return answer;
+}//end solution.
