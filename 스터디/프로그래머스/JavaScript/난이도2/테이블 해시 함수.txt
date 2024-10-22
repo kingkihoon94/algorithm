@@ -1,0 +1,19 @@
+function solution(data, col, row_begin, row_end) {
+    data.sort((a,b) => {
+        if(a[col-1] === b[col-1]) {
+            return b[0] - a[0];
+        } else return a[col-1] - b[col-1];
+    })
+
+    let xorSum = 0;
+
+    for(let i=row_begin-1; i<=row_end-1; i++){
+        let modCnt = 0;
+        for(tuple of data[i]) {
+            modCnt += tuple % (i+1);
+        }
+        xorSum = xorSum ^ modCnt; // xOR 연산자.
+    }//end for1.
+
+    return xorSum;
+}//end solution.
