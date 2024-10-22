@@ -1,0 +1,118 @@
+class MinHeap {
+    constructor() {
+        this.heap = []
+    }
+
+    peek() {
+        return this.heap[0];
+    }
+
+    getLeft(parentIndex) {
+        return parentIndex * 2 + 1;
+    }
+
+    getRight(parentIndex) {
+        return parentIndex * 2 + 2;
+    }
+
+    getParent(index) {
+        return Math.floor((index-1) / 2);
+    }
+
+    enqueue(value) {
+        this.heap.push(value);
+        this.makeHeapUp();
+    }
+
+    makeHeapUp() {
+        let index = this.heap.length - 1;
+        const value = this.heap[index];
+
+        while(index > 0) {
+            const pIndex = this.getParent(index);
+
+            if(this.heap[pIndex] > value) {
+                this.heap[index] = this.heap[pIndex]; // 부모를 현재 자식 위치로 이동시킴.
+                index = pIndex;
+            } else break;
+        }
+        this.heap[index] = value; // 현재 인덱스에 넣어준 값 세팅.
+    }//end makeHeap.
+
+    dequeue() {
+        if(this.heap.length === 0) {
+            return undefined;
+        }
+
+        const value = this.heap[0];
+
+        if(this.heap.length === 1) {
+            this.heap = [];
+        } else {
+            this.heap[0] = this.heap.pop();
+            this.makeHeapDown();
+        }
+
+        return value;
+    }
+
+    makeHeapDown() {
+        let index = 0;
+        const length = this.heap.length;
+        const value = this.heap[index];
+
+        while (this.getLeft(index) < length) {
+            const lIndex = this.getLeft(index);
+            const rIndex = this.getRight(index);
+            let sIndex = lIndex;
+
+            if(sIndex+1 < length && this.heap[sIndex] > this.heap[rIndex]) {
+                sIndex = rIndex;
+            }
+
+            if(this.heap[sIndex] <= value) {
+                this.heap[index] = this.heap[sIndex];
+                index = sIndex;
+            } else break;
+        }//end while.
+
+        this.heap[index] = value;
+    }//end makeHeapDown.
+
+}//class MinHeap.
+
+function solution(n, k, enemy) {
+    let answer = enemy.length;
+
+    let start = n;
+    let pass = k;
+    let pq = new MinHeap();
+
+    for(let i=0; i<k; i++) {
+        pq.enqueue(enemy[i]);
+    }// initial pq.
+
+    for(let i=k; i<enemy.length; i++){
+        if(pq.peek() < enemy[i]) {
+            const min = pq.dequeue();
+
+            if(start < min) {
+                answer = i;
+                break;
+            }
+
+            pq.enqueue(enemy[i]);
+            start -= min;
+        } else {
+            if(start < enemy[i]) {
+                answer = i;
+                break;
+            }
+            start -= enemy[i];
+        }
+    }//end for1.
+
+    return answer;
+}//end solution.
+
+// 자바스크립트로 우선순위 큐 만들라니까 생각보다 어렵다는걸 깨달음.
