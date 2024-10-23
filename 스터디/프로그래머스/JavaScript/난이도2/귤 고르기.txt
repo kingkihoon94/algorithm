@@ -1,0 +1,29 @@
+function solution(k, tangerine) {
+    const map = new Map();
+
+    for(t of tangerine) {
+        if(map.has(t)){
+            const value = map.get(t);
+            map.set(t, value+1);
+        } else {
+            map.set(t, 1);
+        }
+    }//end for1.
+
+    const array = Array.from(map.values());
+
+    array.sort((a,b) => {return b - a});
+
+    let count = k;
+    let index = 0;
+    while(true) {
+        if(count >= array[index]) {
+            count -= array[index];
+        } else break;
+
+        if(count === 0) break;
+        index++;
+    }//end while.
+
+    return index+1;
+}//end solution.
