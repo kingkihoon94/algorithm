@@ -1,0 +1,31 @@
+function solution(order) {
+    let answer = 0;
+
+    let stack = [];
+
+    let time = 1;
+    for(let i=0; i<order.length; i++){
+        const v = order[i];
+
+        if(time < v) {
+            for(let k=time; k<v; k++){
+                stack.push(k);
+            }
+            answer++;
+            time = v+1;
+        } else if(time === v){
+            answer++;
+            time++;
+        } else {
+            const popValue = stack[stack.length - 1];
+            if(popValue === order[i]){
+                stack.pop();
+                answer++;
+            } else break;
+        }
+    }//end for1.
+
+
+
+    return answer;
+}//end solution.
