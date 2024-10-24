@@ -1,0 +1,33 @@
+function solution(k, ranges) {
+    var answer = [];
+
+    let areaSumArray = [0];
+
+    let nextNum = -1;
+
+    let count = 0;
+    while(k !== 1) {
+        if(k % 2 === 0) {
+            nextNum = k / 2;
+        } else {
+            nextNum = 3*k + 1;
+        }
+        const area = (k+nextNum) / 2;
+        areaSumArray.push(areaSumArray[count] + area);
+        k = nextNum;
+        count++;
+    }
+
+    for(range of ranges) {
+        let l = range[0];
+        let r = count + range[1]; // r 의 값은 항상 0 이하의 값만 input 으로 준다고 적혀져있음.
+
+        if(r < l) {
+            answer.push(-1.0);
+            continue;
+        } // 구간이 유효하지 않은경우.
+
+        answer.push(areaSumArray[r] - areaSumArray[l]); // 오른쪽 구간합 - 왼쪽 구간합.
+    }//end for1.
+    return answer;
+}//end solution.
