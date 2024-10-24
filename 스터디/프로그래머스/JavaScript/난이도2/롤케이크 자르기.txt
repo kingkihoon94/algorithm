@@ -1,0 +1,42 @@
+function solution(topping) {
+    let answer = 0;
+
+    let index = 0;
+
+    const lMap = new Map();
+    const rMap = new Map();
+
+    for(value of topping) {
+        if(rMap.has(value)) {
+            rMap.set(value, rMap.get(value) + 1);
+        } else {
+            rMap.set(value, 1);
+        }
+    }//end for.
+
+    while(index !== topping.length) {
+        const currentTopping = topping[index];
+
+        if(lMap.has(currentTopping)) {
+            lMap.set(currentTopping, lMap.get(currentTopping) + 1);
+        } else {
+            lMap.set(currentTopping, 1);
+        }
+
+
+        const rCount = rMap.get(currentTopping);
+        if(rCount === 1) {
+            rMap.delete(currentTopping);
+        } else {
+            rMap.set(currentTopping, rMap.get(currentTopping) - 1);
+        }
+
+        if(lMap.size === rMap.size) {
+            answer++;
+        }
+
+        index++;
+    }
+
+    return answer;
+}//end solution.
