@@ -1,0 +1,64 @@
+function solution(want, number, discount) {
+    let answer = 0 ;
+
+    const map = new Map();
+
+    const checkAll = () => {
+        for(let i=0; i<want.length; i++) {
+            const item = want[i];
+            const need = number[i];
+
+            if(!map.has(item)) return false;
+            const count = map.get(item);
+            if(count < need) return false;
+        }
+        return true;
+    }//end checkAll.
+
+    for(let i=0; i<10; i++) {
+        if(map.has(discount[i])) {
+            map.set(discount[i], map.get(discount[i]) + 1);
+        } else map.set(discount[i] , 1);
+    }//end for1.
+
+
+
+    let canArray = new Array(discount.length).fill(false);
+
+    if(checkAll()){
+        answer++;
+        canArray[0] = true;
+    } else {
+        canArray[0] = false;
+    }
+
+    for(let i=1; i<=discount.length - 10; i++) {
+        const remove = discount[i-1];
+        const add = discount[i+9];
+
+        if(add === remove) {
+            if(canArray[i-1]) answer++;
+            canArray[i] = canArray[i-1];
+            continue;
+        }
+
+        if(map.get(remove) === 1) {
+            map.delete(remove);
+        } else {
+            map.set(remove, map.get(remove) - 1);
+        }
+
+        if(map.has(add)){
+            map.set(add, map.get(add) + 1);
+        } else map.set(add, 1);
+
+        if(checkAll()){
+            answer++;
+            canArray[i] = true;
+        } else {
+            canArray[i] = false;
+        }
+    }//end for.
+
+    return answer;
+}//end solution.
