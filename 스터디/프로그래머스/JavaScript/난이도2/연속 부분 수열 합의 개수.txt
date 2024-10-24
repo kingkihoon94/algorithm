@@ -1,0 +1,23 @@
+function solution(elements) {
+    const set = new Set();
+
+    for(let length=1; length<=elements.length; length++){
+        let sum = 0;
+
+        for(let i=0; i<length; i++) {
+            sum += elements[i];
+        }//end for2.
+
+        set.add(sum);
+
+        for(let i=0; i<elements.length-1; i++){
+            const removeIndex = i;
+            const addIndex = (i+length) % elements.length;
+
+            sum -= elements[removeIndex];
+            sum += elements[addIndex];
+            set.add(sum);
+        }
+    }//end for1.
+    return set.size;
+}//end solution.
