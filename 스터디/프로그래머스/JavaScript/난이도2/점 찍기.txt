@@ -1,0 +1,13 @@
+function solution(k, d) {
+    let answer = 0;
+
+    let startY = Math.floor(d / k) * k;
+
+    for(let i=startY; i>=0; i-=k) {
+        const maxX = Math.floor(Math.sqrt(d*d - i*i));
+        const count = Math.floor(maxX / k) + 1;
+        answer += count;
+    }//end for1.
+
+    return answer;
+}//end solution.
