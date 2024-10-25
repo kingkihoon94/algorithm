@@ -1,0 +1,67 @@
+const getMinute = (hour , minute) => {
+        return hour * 60 + Number(minute);
+}//end getMinute.
+
+function solution(fees, records) {
+    let answer = [];
+
+    const parkingMap = new Map();
+    const timeMap = new Map();
+
+    const getPrice = (time) => {
+        if(time > fees[0]) {
+            const overTimePrice = Math.ceil((time - fees[0]) / fees[2]) * fees[3];
+            return fees[1] + overTimePrice;
+        } else return fees[1];
+    }//end getPrice.
+
+    for(record of records) {
+        const split = record.split(" ");
+        const time = split[0].split(":");
+        const minute = getMinute(time[0], time[1]);
+
+        if(split[2] === 'IN') {
+
+            parkingMap.set(split[1], minute);
+
+        } else {
+
+            const inTime = parkingMap.get(split[1]);
+
+            const parkingTime = minute - inTime;
+
+            if(!timeMap.has(split[1])) {
+                timeMap.set(split[1], parkingTime);
+            } else {
+                timeMap.set(split[1], timeMap.get(split[1]) + parkingTime);
+            }
+
+            parkingMap.delete(split[1]);
+
+        }//end if else.
+
+    }//end for1.
+
+    for (const [key, value] of parkingMap) {
+        const parkingTime = 1439 - value;
+
+        if(!timeMap.has(key)) {
+            timeMap.set(key, parkingTime);
+        } else {
+            timeMap.set(key, timeMap.get(key) + parkingTime);
+        }
+
+        parkingMap.delete(key);
+    }// end for1. (아직 출차 안한 차량 시간 계산)
+
+    const answerArray = [];
+
+    for (const [key, value] of timeMap) {
+        const price = getPrice(value);
+        answerArray.push([key, price]);
+    }// end for1. (비용 계산)
+
+    answerArray.sort((a,b) => {return a[0] - b[0]});
+
+    return answerArray.map((item) => item[1]);
+}//end solution.
