@@ -1,0 +1,61 @@
+function solution(n, info) {
+    let max = 0;
+    let answerArray = [];
+
+    const dfs = (index,array) => {
+        if(index===10) {
+            let arrayCnt = n;
+            let sum = 0;
+            let arrowArray = [];
+
+            for(let i=0; i<10; i++) {
+                if(array[i] === "win") {
+                    arrowArray.push(info[i] + 1);
+                    sum += 10 - i;
+                    arrayCnt -= info[i] + 1;
+                } else {
+                    arrowArray.push(0);
+                    if(info[i] !== 0) sum -= 10 - i;
+                }
+            }//end for1.
+
+            if(arrayCnt < 0 || sum < max) return;
+
+            arrowArray.push(arrayCnt);
+
+            if(max < sum) {
+                max = sum;
+                answerArray = [];
+            }
+
+            answerArray.push(arrowArray);
+
+            return;
+        }//end if.
+
+        dfs(index+1 , [...array , "win"]);
+        dfs(index+1 , [...array , "lose"]);
+
+    }//end dfs.
+
+    dfs(0,[]);
+
+    if(max === 0) return [-1];
+
+    let answer = answerArray[0];
+
+    for(let i=1; i<answerArray.length; i++) {
+        let index = 10;
+        while(index >= 0) {
+            if(answerArray[i][index] > answer[index]) {
+                answer = answerArray[i];
+                break;
+            } else if(answerArray[i][index] < answer[index]) {
+                break;
+            }
+            index--;
+        }
+    }//end for1.
+
+    return answer;
+}//end solution.
