@@ -1,0 +1,37 @@
+const transform = (n, k) => {
+    let answer = '';
+
+    while(n > k) {
+        answer = (n % k) + answer;
+        n = Math.floor(n/k);
+    }//end while.
+
+    return n != 0 ? n + answer : answer;
+}//end transform
+
+const canPrimeNumber = (number) => {
+    if(number === '2') return true;
+
+    const max = Math.floor(Math.sqrt(number));
+
+    for(let i=2; i<=max; i++) {
+        if(number % i === 0) return false;
+    }//end for1.
+
+    return true;
+}
+
+function solution(n, k) {
+    let answer = 0;
+
+    const transformNumber = transform(n,k);
+    const numberSplit = transformNumber.split("0");
+
+    for(number of numberSplit) {
+        if(number.length === 0 || number === '1') continue;
+
+        if(canPrimeNumber(number)) answer++;
+    }//end for1.
+
+    return answer;
+}//end solution.
