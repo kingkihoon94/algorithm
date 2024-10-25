@@ -1,0 +1,56 @@
+function solution(n, left, right) {
+    let answer = [];
+
+    const getSectionArray = (sectionNumber) => {
+        const array = [];
+        for(let i=0; i<n; i++) {
+            if(i<=sectionNumber) {
+                array.push(sectionNumber+1);
+            } else {
+                array.push(i+1);
+            }
+        }//end for1.
+
+        return array;
+    }//end getSectionArray.
+
+    const lSectionNumber = Math.floor(left/n);
+    const rSectionNumber = Math.floor(right/n);
+
+    if(lSectionNumber === rSectionNumber) { // 같은 구역 처리.
+        answer = getSectionArray(lSectionNumber).splice(left%n, right % n + 1);
+    } else {
+        const lSection = getSectionArray(lSectionNumber).splice(left % n); // 왼쪽 영역.
+        const rSection = getSectionArray(rSectionNumber).splice(0, right % n + 1);  //오른쪽 영역.
+
+        answer = lSection;
+
+        for(let i=lSectionNumber+1; i<rSectionNumber; i++) {
+            const middleArray = getSectionArray(i);
+            answer = answer.concat(middleArray);
+        }
+
+        answer = answer.concat(rSection);
+    }//end else.
+
+    return answer;
+}//end solution.
+
+// 위에는 틀린 문제. (15~20 테스트케이스에서 틀림. 왜 틀리는지는 정확히 모르겠으나, 걸리는 시간이나 메모리를 봤을떄 이렇게 풀면 안되는 것 같음.)
+
+// 2차원배열을 1차원 배열로 가지고 노는 문제가 나왔을떄는 일차원 배열의 index 의 몫과 나머지로 2차원 배열의 row col 값을 가지고 놀 수 있음을 한번 더 깨닫게 해준 고마운 문제.
+
+function solution(n, left, right) {
+    let answer = [];
+
+    for(let i=left; i<=right; i++) {
+        const row = Math.floor(i/n);
+        const col = i%n;
+        answer.push(Math.max(row, col) + 1); // row col 값중 큰 값에 + 1 한 값이 [row][col] 값임을 알 수 있음.
+    }//end for1. (1차원 배열의 index 로 row , col 구하기.)
+
+
+    return answer;
+}//end solution.
+
+// 이게 정확한 풀이.
