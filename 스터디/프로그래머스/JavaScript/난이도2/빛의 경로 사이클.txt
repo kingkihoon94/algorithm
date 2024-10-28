@@ -1,0 +1,69 @@
+function solution(grid) {
+    let answer = [];
+
+    const gridRow = grid.length;
+    const gridCol = grid[0].length;
+    const visited = Array.from(Array(gridRow), () => Array.from(Array(gridCol), () => Array(4).fill(false)));
+    const direction = [[1,0], [-1,0], [0,1] , [0,-1]];
+    const leftDirection = [2,3,1,0];
+    const rightDirection = [3,2,0,1];
+
+    // direction 0 : 위에서 / 1 : 아래에서 / 2 : 왼쪽에서 / 3 : 오른쪽에서 오는 빛 표현.
+    const start = (row,col,direct) => {
+        let sx = row;
+        let sy = col;
+        let sd = direct;
+        let count = 1;
+        visited[row][col][direct] = true;
+
+        while(true) {
+            let nd = sd;
+
+            if(grid[sx][sy] === 'L') {
+                nd = leftDirection[nd];
+            } else if(grid[sx][sy] === 'R') {
+                nd = rightDirection[nd];
+            }
+
+
+            let nx = sx + direction[nd][0];
+            let ny = sy + direction[nd][1];
+
+            if(nx === gridRow) {
+                nx = 0;
+            } else if(nx === -1) {
+                nx = gridRow-1;
+            }
+
+            if(ny === gridCol) {
+                ny = 0;
+            } else if(ny === -1) {
+                ny = gridCol-1;
+            }
+
+            if(!visited[nx][ny][nd]) {
+                visited[nx][ny][nd] = true;
+                sx = nx;
+                sy = ny;
+                sd = nd;
+                count++;
+            } else break;
+        }//end while.
+
+        return count;
+    }//end start.
+
+    for(let i=0; i<grid.length; i++) {
+        for(let j=0; j<grid[i].length; j++) {
+            for(let k=0; k<4; k++) {
+                if(!visited[i][j][k]) {
+                    answer.push(start(i,j,k));
+                }
+            }
+        }//end for2.
+    }//end for1.
+
+    answer.sort((a,b) => {return a - b});
+
+    return answer;
+}//end solution.
