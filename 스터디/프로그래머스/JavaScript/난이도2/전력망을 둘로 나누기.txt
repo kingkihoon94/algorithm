@@ -1,0 +1,52 @@
+function solution(n, wires) {
+    let wireArray = Array.from(Array(n+1), () => Array(n+1).fill(false));
+    let answer = 101;
+
+    const simulation = (left, right) => {
+        wireArray[left][right] = false;
+        wireArray[right][left] = false;
+
+        const visited = new Array(n+1).fill(false);
+        const queue = [];
+        visited[left] = true;
+        queue.push(left);
+        let lCount = 1;
+
+        while(queue.length !== 0) {
+            const number = queue.shift();
+
+            for(let i=1; i<=n; i++) {
+                if(wireArray[number][i] && !visited[i]) {
+                    visited[i] = true;
+                    lCount++;
+                    queue.push(i);
+                }
+            }//end for.
+        }//end while.
+
+        const rCount = n - lCount;
+        wireArray[left][right] = true;
+        wireArray[right][left] = true;
+        return Math.abs(lCount - rCount);
+    }//end simulation.
+
+    for(wire of wires) {
+        wireArray[wire[0]][wire[1]] = true;
+        wireArray[wire[1]][wire[0]] = true;
+    }//end for1.
+
+    for(let i=1; i<n; i++) {
+        const left = i;
+
+        for(let j=i+1; j<=n; j++) {
+            const right = j;
+
+            if(wireArray[i][j]) {
+                const diff = simulation(i, j);
+                answer = Math.min(answer, diff);
+            }
+        }//end for2.
+    }//end for1.
+
+    return answer;
+}//end solution.
