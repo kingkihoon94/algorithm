@@ -1,0 +1,64 @@
+function solution(line) {
+    const length = line.length;
+
+    const getMeet = (left, right) => {
+        const dy = left[0] * right[1] - left[1] * right[0];
+        if(dy === 0) return undefined;
+
+        const dx1 = left[1] * right[2] - left[2] * right[1];
+        const dx2 = left[2] * right[0] - left[0] * right[2];
+
+        return [dx1/dy , dx2/dy];
+    }
+
+    const meetArray = [];
+
+    for(let k1=0; k1<length; k1++) {
+        const left = line[k1];
+
+        for(let k2=k1+1; k2<length; k2++) {
+            const right = line[k2];
+            const meet = getMeet(left, right);
+            if(meet === undefined) continue;
+
+            if(meet[0] === Math.floor(meet[0]) && meet[1] === Math.floor(meet[1])) {
+                meetArray.push(meet);
+            }
+        }//end for2.
+    }//end for1.
+
+    let minX = Number.MAX_SAFE_INTEGER , maxX = Number.MAX_SAFE_INTEGER * (-1);
+    let minY = Number.MAX_SAFE_INTEGER , maxY = Number.MAX_SAFE_INTEGER * (-1);
+
+    for(meet of meetArray) {
+        minX = Math.min(minX, meet[0]);
+        maxX = Math.max(maxX, meet[0]);
+        minY = Math.min(minY, meet[1]);
+        maxY = Math.max(maxY, meet[1]);
+    }//end for1.
+
+    const row = maxY - minY;
+    const col = maxX - minX;
+
+    let dotArray = Array.from(Array(row+1), () => Array(col+1).fill("."));
+
+    const zeroPoint = [minX, maxY];
+
+    for(meet of meetArray) {
+        const diffX = meet[0] - zeroPoint[0];
+        const diffY = zeroPoint[1] - meet[1];
+        dotArray[diffY][diffX] = "*";
+    }
+
+    let answer = [];
+
+    for(let i=0; i<dotArray.length; i++) {
+        let string = "";
+        for(let j=0; j<dotArray[i].length; j++) {
+            string += dotArray[i][j];
+        }
+        answer.push(string);
+    }
+
+    return answer;
+}//end solution.
