@@ -1,0 +1,29 @@
+function solution(n) {
+    const dp = new Array(100001).fill(0);
+    const MOD = 1000000007;
+
+    dp[0] = 1;
+    dp[1] = 1;
+    dp[2] = 3;
+    dp[3] = 10;
+    dp[4] = 23;
+    dp[5] = 62;
+
+    for(let i=6; i<=n; i++) {
+        let count = dp[i-1];
+
+        count = (count + 2 * dp[i-2]) % MOD;
+        count = (count + 6 * dp[i-3]) % MOD;
+        count = (count + dp[i-4]) % MOD;
+        count = (count + MOD - dp[i-6]) % MOD;
+
+        dp[i] = count;
+    }//end for.
+
+    return dp[n];
+}//end solution.
+
+// f(n) = f(n-1) + 2f(n-2) + 5f(n-3) + 2f(n-4) + 2f(f-5) + 4f(n-6) + S -> (2f(n-7) + 2f(n-8) + 4f(n-9) + ... +)
+// f(n-3) = f(n-4) + 2f(n-5) + 5f(n-6) + S -> (2f(n-7) + 2f(n-8) + 4f(n-9) + ... +)
+// f(n) - f(n-3) = f(n-1) + 2f(n-2) + 5f(n-3) + f(n-4) - f(n-6) + (S - S = 0)
+// f(n) = f(n-1) + 2f(n-2) + 6f(n-3) + f(n-4) - f(n-6) 점화식 완성.
