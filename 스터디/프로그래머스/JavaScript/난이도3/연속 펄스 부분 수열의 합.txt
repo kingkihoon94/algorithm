@@ -1,0 +1,24 @@
+function solution(sequence) {
+    let answer = 0;
+
+    const plusSum = [0];
+
+    // min 과 max 는 0부터 시작임을 이해하고 넘어가면 좋을 것 같음.
+
+    let min = 0;
+    let max = 0;
+
+    for(let i=0; i<sequence.length; i++) {
+        const value = sequence[i];
+        if(i%2 === 0) {
+            plusSum.push(value + plusSum[i]);
+        } else {
+            plusSum.push(plusSum[i] - value);
+        }
+
+        min = Math.min(min,plusSum[i+1]);
+        max = Math.max(max,plusSum[i+1]);
+    }//end for1.
+
+    return max - min;
+}//end solution.
