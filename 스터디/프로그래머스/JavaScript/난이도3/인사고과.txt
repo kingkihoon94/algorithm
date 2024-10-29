@@ -1,0 +1,35 @@
+function solution(scores) {
+    let answer = 0;
+
+    const myScore = scores.shift();
+    const mySum = myScore[0] + myScore[1];
+
+    scores.sort((a, b) => {
+      if (a[0] === b[0]) {
+        return a[1] - b[1]; // 첫 번째 요소가 같으면 두 번째 요소 오름차순 정렬
+      }
+      return b[0] - a[0]; // 첫 번째 요소 기준 내림차순 정렬
+    });
+
+    console.log(scores);
+
+    let maxY = 0;
+
+    for(score of scores) {
+        if(myScore[0] < score[0] && myScore[1] < score[1]) return -1; // 완호 상위호환 스코어 있는 경우.
+
+        // maxY 보다 score[1] 이 작으면 score[0] 도 무조건 작을것이라 무조건 하위 호환.
+        if(score[1] < maxY) continue;
+
+        // 그 이후에는 완호랑만 비교하면 된다.
+        if (mySum < score[0] + score[1]) {
+            answer++;
+            maxY = score[1];
+        }
+    }//end for1.
+
+
+    return answer + 1;
+}//end solution.
+
+// sorting 을 어떻게 해야 잘 풀어나갈 수 있는지 생각하게 만드는 문제.
