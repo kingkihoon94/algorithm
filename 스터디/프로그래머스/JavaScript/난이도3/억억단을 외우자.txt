@@ -1,0 +1,41 @@
+function solution(e, starts) {
+    let answer = new Array(starts.length).fill(0);
+
+    let cntArray = new Array(e+1).fill(0);
+
+    for(let i=1; i<=e; i++) {
+        for(let j=1; j<= Math.floor(e/i); j++){
+            cntArray[i*j]++;
+        }
+    } // 시간복잡도 n * log(n). 찾아보니 조화급수 라는 형태를 띈다는 것 같음.
+
+    let array = [];
+    for(let i=0; i<starts.length; i++) {
+        array.push([i, starts[i]]);
+    }
+
+    array.sort((a,b) => { return b[1] - a[1]}); // 뒤에서부터 풀어가야 max 값 계산에 차질이 없을 것으로 보임.
+
+    let maxCount = 0;
+    let maxCountValue = 0;
+
+    let arrayIndex = 0;
+    const endIndex = array[array.length -1][1];
+
+    for(let i=e; i>=endIndex; i--) {
+        if(maxCount < cntArray[i]) {
+            maxCount = cntArray[i];
+            maxCountValue = i;
+        } else if(maxCount === cntArray[i]) {
+            maxCountValue = i;
+        }
+
+        if(array[arrayIndex][1] === i) {
+            const answerIndex = array[arrayIndex][0];
+            answer[answerIndex] = maxCountValue;
+            arrayIndex++;
+        }
+    }//end for1.
+
+    return answer;
+}//end solution.
