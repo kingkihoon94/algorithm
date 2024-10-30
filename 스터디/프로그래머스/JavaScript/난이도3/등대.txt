@@ -1,0 +1,90 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class Solution {
+    static int answer = 0;
+    static boolean[] visited;
+    static List<Integer>[] edgeArray;
+
+    public static int solution(int n, int[][] lighthouse) {
+        answer = 0;
+        visited = new boolean[n + 1];
+        edgeArray = new ArrayList[n + 1];
+
+        for (int i = 0; i <= n; i++) {
+            edgeArray[i] = new ArrayList<>();
+        }
+
+        for (int[] edge : lighthouse) {
+            edgeArray[edge[0]].add(edge[1]);
+            edgeArray[edge[1]].add(edge[0]);
+        }
+
+        dfs(1);
+
+        return answer;
+    }
+
+    private static int dfs(int vertex) {
+        visited[vertex] = true;
+        List<Integer> array = edgeArray[vertex];
+
+        if (array.size() == 1 && vertex != 1) {
+            return 0; // 리프 노드인 경우, 불을 키지 않음
+        }
+
+        int flag = 1;
+        for (int next : array) {
+            if (!visited[next]) {
+                flag *= dfs(next);
+            }
+        }
+
+        if (flag == 1) {
+            return 0; // 현재 불을 키지 않음
+        } else {
+            answer++;
+            return 1; // 현재 불을 켜야 함
+        }
+    }
+} // 자바로 풀었음. 자바스크립트로 푸니까 재귀 호출 스택의 최대 깊이를 넘어선다고 떠서 자바로 풀어보니까 잘 됨.
+
+//밑에는 원래 자바스크립트 코드.
+
+function solution(n, lighthouse) {
+    let answer = 0;
+    const visited = new Array(n + 1).fill(false);
+    const edgeArray = Array.from({length: n + 1}, () => []);
+
+    const dfs = (vertex) => {
+        visited[vertex] = true;
+
+        const array = edgeArray[vertex];
+        if (array.length === 1 && vertex !== 1) {
+            return 0; // 리프 노드인 경우, 불을 키지 않음
+        }
+
+        let flag = 1;
+        for (const next of array) {
+            if (!visited[next]) {
+                flag *= dfs(next);
+            }
+        }
+
+        if (flag === 1) {
+            return 0; // 현재 불을 키지 않음
+        } else {
+            answer++;
+            return 1; // 현재 불을 켜야 함
+        }
+    };
+
+    for (const [v1, v2] of lighthouse) {
+        edgeArray[v1].push(v2);
+        edgeArray[v2].push(v1);
+    }
+
+    dfs(1);
+
+    return answer;
+}
