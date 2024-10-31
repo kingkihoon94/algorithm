@@ -1,0 +1,39 @@
+function solution(n, roads, sources, destination) {
+    const visited = new Array(n+1).fill(false);
+    const cntArray = new Array(n+1).fill(-1);
+    const roadArray = Array.from({length: n+1}, () => []);
+
+    for(const [a,b] of roads) {
+        roadArray[a].push(b);
+        roadArray[b].push(a);
+    }//end for1.
+
+    const queue = [];
+    const start = destination;
+    visited[start] = true;
+    queue.push(start);
+
+    let count = 0;
+    while(queue.length !== 0) {
+        const size = queue.length;
+
+        for(let i=0; i<size; i++) {
+            const vertex = queue.shift();
+            cntArray[vertex] = count;
+
+            for(const next of roadArray[vertex]) {
+                if(!visited[next]) {
+                    visited[next] = true;
+                    queue.push(next);
+                }
+            }//end for2.
+        }//end for1.
+        count++;
+    }//end while.
+
+    const answer = [];
+    for(source of sources) {
+        answer.push(cntArray[source]);
+    }
+    return answer;
+}//end solution.
