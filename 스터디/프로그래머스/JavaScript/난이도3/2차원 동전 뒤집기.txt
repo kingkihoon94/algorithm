@@ -1,0 +1,37 @@
+function solution(beginning, target) {
+    let answer = 100;
+    const row = beginning.length;
+    const col = beginning[0].length;
+
+    const dfs = (board, rowIndex, rowSwapCount) => {
+        if(rowIndex===row) {
+            let colSwapCount = 0;
+
+            for(let i=0; i<col; i++) {
+                let diffCount = 0;
+
+                for(let j=0; j<row; j++) {
+                    if(board[j][i] !== target[j][i]) diffCount++;
+                }//end for2.
+
+                if(diffCount !== 0 && diffCount !== row) return;
+                if(diffCount === row) colSwapCount++;
+            }//end for1.
+            answer = Math.min(answer, rowSwapCount + colSwapCount);
+            return;
+        }
+
+        dfs(board, rowIndex+1, rowSwapCount); // rowIndex 번째 행 안뒤집고 넘기기.
+
+        const newBoard = JSON.parse(JSON.stringify(board));
+        for(let i=0; i<col; i++) {
+            newBoard[rowIndex][i] = newBoard[rowIndex][i] ^ 1;
+        }
+
+        dfs(newBoard, rowIndex+1, rowSwapCount+1);
+    }
+
+    dfs(beginning, 0, 0);
+
+    return answer === 100 ? -1 : answer;
+}//end solution.
