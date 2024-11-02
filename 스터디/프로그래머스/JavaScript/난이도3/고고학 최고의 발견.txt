@@ -1,0 +1,72 @@
+function solution(clockHands) {
+    let answer = 10000000;
+    
+    const row = clockHands.length, col = clockHands.length;
+    const direction = [[0,0], [-1,0], [1,0], [0,-1], [0,1]];
+    let firstRowTurnCountArray = new Array(col).fill(0);
+    
+    const dfs = (index) => {
+        if(index === col) {
+            let count = 0;
+            const newMap = JSON.parse(JSON.stringify(clockHands));
+
+            for(let i=0; i<col; i++) {
+                count += firstRowTurnCountArray[i];
+                for(let k=0; k<5; k++) {
+                    const nx = 0 + direction[k][0];
+                    const ny = i + direction[k][1];
+                            
+                    if(nx>=0 && nx<row && ny>=0 && ny<col) {
+                        newMap[nx][ny] = (newMap[nx][ny] + firstRowTurnCountArray[i]) % 4;
+                    }//end if.
+                }//end for2.
+            }//end for1.
+            
+            for(let i=1; i<row; i++) {
+                for(let j=0; j<col; j++){
+                    const upValue = newMap[i-1][j];
+                    if(upValue !== 0) {
+                        const turnCount = 4 - upValue;
+                        count+= turnCount;
+                        for(let k=0; k<5; k++) {
+                            const nx = i + direction[k][0];
+                            const ny = j + direction[k][1];
+                            
+                            if(nx>=0 && nx<row && ny>=0 && ny<col) {
+                                newMap[nx][ny] = (newMap[nx][ny] + turnCount) % 4;
+                            }//end if.
+                        }//end for3.
+                    }//end if.
+                }//end for2.
+            }//end for1.
+            
+            let canAnswer = true;
+            for(let i=0; i<col; i++) {
+                if(newMap[row-1][i] !== 0) {
+                    canAnswer = false;
+                    break;
+                }
+            }
+            
+            if(canAnswer) {
+                answer = Math.min(answer, count);
+            };
+            
+            return;
+        }//end if.
+        
+        for(let k=0; k<4; k++) {
+            firstRowTurnCountArray[index] = k;
+            dfs(index+1);
+        }
+    }//end dfs.
+    
+    dfs(0);
+
+    return answer;
+}//end solution.
+
+// 1. [0,0] > [1,0] === [1,0] --> 돌리는 순서는 중요하지 않다. 
+// 2. 4번이상 돌리면 원래값으로 돌아오니 0번~3번 내로 끝내야한다.
+// 3. 첫번째 행의 첫번째 열부터 마지막 열까지 (최대 8개) 에 대한 0~3 값 완전탐색 결과는 4^8 ==> 2^16 ==> 65536번
+
