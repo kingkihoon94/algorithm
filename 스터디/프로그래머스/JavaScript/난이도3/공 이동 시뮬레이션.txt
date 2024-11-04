@@ -1,0 +1,94 @@
+const getArea0 = (array, dist, col) => {
+    let newYArea = [0,0];
+
+    if(array[1][0] === 0) {
+        newYArea = [array[1][0], array[1][1] + dist];
+    } else {
+        newYArea = [array[1][0] + dist, array[1][1] + dist];
+    }
+
+    if(newYArea[0] >= col) newYArea[0] = -1; // 시작점이 col 보다 크거나 같을 수 없음.
+    if(newYArea[1] >= col) newYArea[1] = col-1;
+
+    array[1] = newYArea;
+}//end getArea1.
+
+const getArea1 = (array, dist, col) => {
+    let newYArea = [0,0];
+
+    if(array[1][1] === col-1) {
+        newYArea = [array[1][0] - dist , array[1][1]];
+    } else {
+        newYArea = [array[1][0] - dist , array[1][1] - dist];
+    }
+
+    if(newYArea[0] < 0) newYArea[0] = 0;
+    if(newYArea[1] < 0) newYArea[1] = -1; // 끝점이 0보다 작을 수는 없음.
+
+    array[1] = newYArea;
+}//end getArea1.
+
+const getArea2 = (array, dist, row) => {
+    let newXArea = [0,0];
+
+    if(array[0][0] === 0) {
+        newXArea = [array[0][0] , array[0][1] + dist];
+    } else {
+        newXArea = [array[0][0] + dist , array[0][1] + dist];
+    }
+
+    if(newXArea[0] >= row) newXArea[0] = -1; // 시작점이 row 보다
+    if(newXArea[1] >= row) newXArea[1] = row-1;
+
+    array[0] = newXArea;
+}//end getArea2.
+
+const getArea3 = (array, dist, row) => {
+    let newXArea = [0,0];
+
+    if(array[0][1] === row-1) {
+        newXArea = [array[0][0] - dist , array[0][1]];
+    } else {
+        newXArea = [array[0][0] - dist , array[0][1] - dist];
+    }
+
+    if(newXArea[0] < 0) newXArea[0] = 0;
+    if(newXArea[1] < 0) newXArea[1] = -1; // 끝점이 0 보다 작을 수는 없음.
+
+    array[0] = newXArea;
+}//end getArea3.
+
+const checkArea = (array) => {
+    if(array[0][0] === -1 || array[0][1] === -1 || array[1][0] === -1 || array[1][1] === -1) return false;
+    return true;
+}//end checkArea.
+
+
+function solution(n, m, x, y, queries) {
+    const direction = [[0,1], [0,-1], [1,0], [-1,0]];
+
+    let answerArea = [[x,x], [y,y]];
+
+    for(let i=queries.length-1; i>=0; i--) {
+        const query = queries[i];
+
+        switch (query[0]) {
+            case 0 : getArea0(answerArea, query[1], m);
+                break;
+            case 1 : getArea1(answerArea, query[1], m);
+                break;
+            case 2 : getArea2(answerArea, query[1], n);
+                break;
+            case 3 : getArea3(answerArea, query[1], n);
+                break;
+        }
+
+        const isAvailable = checkArea(answerArea);
+        if(!isAvailable) return 0;
+    }//end for1.
+
+    const rowCount = BigInt(answerArea[0][1] - answerArea[0][0] + 1); // 값이 엄청 커질 수 있으므로 빅인트 처리.
+    const colCount = BigInt(answerArea[1][1] - answerArea[1][0] + 1); // 값이 엄청 커질 수 있으므로 빅인트 처리.
+
+    return rowCount * colCount;
+}//end solution.
