@@ -1,0 +1,55 @@
+function solution(target) {
+    let dp = new Array(100001).fill([0,0]);
+
+    for(let num=1; num<=target; num++) {
+        let answer = [100001, 100001];
+
+        for(let i=1; i<=20; i++) {
+            const prevIndex = num - i;
+            if(prevIndex < 0) break;
+
+            const value = [dp[prevIndex][0] + 1, dp[prevIndex][1] + 1];
+
+            if(answer[0] > value[0] || answer[0] === value[0] && answer[1] < value[1]) {
+                answer = value;
+            }
+
+        }//end for2. 싱글 던지는 경우.
+
+        for(let i=1; i<=20; i++) {
+            const prevIndex = num - (i*2);
+            if(prevIndex < 0) break;
+
+            const value = [dp[prevIndex][0] + 1, dp[prevIndex][1]];
+
+            if(answer[0] > value[0] || answer[0] === value[0] && answer[1] < value[1]) {
+                answer = value;
+            }
+
+        }//end for2. 더블 던지는 경우.
+
+        for(let i=1; i<=20; i++) {
+            const prevIndex = num - (i*3);
+            if(prevIndex < 0) break;
+
+            const value = [dp[prevIndex][0] + 1, dp[prevIndex][1]];
+
+            if(answer[0] > value[0] || answer[0] === value[0] && answer[1] < value[1]) {
+                answer = value;
+            }
+
+        }//end for2. 트리플 던지는 경우.
+
+        if(num >= 50) {
+            const prevIndex = num - 50;
+            const value = [dp[prevIndex][0] + 1, dp[prevIndex][1] + 1];
+            if(answer[0] > value[0] || answer[0] === value[0] && answer[1] < value[1]) {
+                answer = value;
+            }
+        }// bull 던지는 경우.
+
+        dp[num] = answer;
+    }//end for1.
+
+    return dp[target];
+}//end solution.
