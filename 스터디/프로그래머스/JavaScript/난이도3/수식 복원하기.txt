@@ -1,0 +1,79 @@
+const calculator = (number1, operator, number2, base) => {
+    const decimal1 = parseInt(number1, base);
+    const decimal2 = parseInt(number2, base);
+    
+    let result;
+
+    if (operator === '+') {
+        result = decimal1 + decimal2;
+    } else {
+        result = decimal1 - decimal2;
+    }
+
+    return result.toString(base);
+}
+
+
+function solution(expressions) {
+    let answer = [];
+    
+    let checkArray = [false, false, true, true, true, true, true, true, true, true];
+    
+    const pendingArray = [];
+    
+    let maxNum = 0;
+    
+    for(let i=0; i<expressions.length; i++) {
+        const split = expressions[i].split(" ");
+        
+        for(let j=0; j<split[0].length; j++) {
+            maxNum = Math.max(maxNum, split[0][j]);
+        }
+        
+        for(let j=0; j<split[2].length; j++) {
+            maxNum = Math.max(maxNum, split[2][j]);
+        }
+    }//end for1.
+    
+    for(let j=2; j<=maxNum; j++) {
+        checkArray[j] = false;
+    }//end for1.
+    
+    for(let i=0; i<expressions.length; i++) {
+        const split = expressions[i].split(" ");
+        
+        if(split[4] === 'X') {
+            pendingArray.push(split);
+            continue;
+        }
+        
+        for(let j=maxNum+1; j<=9; j++) {
+            const result = calculator(split[0], split[1], split[2], j);
+            if(result !== split[4]) checkArray[j] = false;
+        }
+    }//end for1.
+    
+    for(let i=0; i<pendingArray.length; i++) {
+        const split = pendingArray[i];
+        const set = new Set();
+        
+        for(let j=2; j<=9; j++) {
+            if(checkArray[j] === true) {
+                const result = calculator(split[0], split[1], split[2], j);
+                set.add(result);
+            }
+        }//end for2.
+        if(set.size === 1) {
+            const answerString = split[0] + " " + split[1] + " " + split[2] + " = " +  [...set][0];
+            answer.push(answerString);
+        } else {
+            const answerString = split[0] + " " + split[1] + " " + split[2] + " = ?";
+            answer.push(answerString);
+        }
+    }//end for1.
+    
+    // console.log(checkArray);
+    
+    
+    return answer;
+}//end solution.
