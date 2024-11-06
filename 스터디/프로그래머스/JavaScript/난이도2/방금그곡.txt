@@ -1,0 +1,49 @@
+// C, C#, D, D#, E, F, F#, G, G#, A, A#, B, B# 13개
+
+function solution(m, musicinfos) {
+    const replaceString = [["C#", "c"],["D#", "d"],["F#", "f"],["G#", "g"],["A#", "a"],["B#", "b"]];
+    
+    for(const [s1, s2] of replaceString) {
+        m = m.replaceAll(s1, s2);
+    }//end for1.
+    
+    // 여러 개인 경우 라디오에서 재생된 시간 제일 긴 음악 제목 반환. 재생된 시간도 같을 경우 선입력 음악 제목 반환.
+    let answer = "(None)";
+    let answerTime = 0;
+    
+    for(const musicInfo of musicinfos) {
+        const split = musicInfo.split(",");
+        
+        const time1 = split[0].split(":");
+        const startTime = 60 * time1[0] + Number(time1[1]);
+        
+        const time2 = split[1].split(":");
+        const endTime = 60 * time2[0] + Number(time2[1]);
+        
+        const playTime = endTime - startTime;
+        
+        let currentMelody = split[3];
+        
+        for(const [s1, s2] of replaceString) {
+            currentMelody = currentMelody.replaceAll(s1, s2);
+        }//end for2.
+        
+        let time = 0;
+        let newMelody = "";
+        
+        while(time < playTime) {
+            newMelody += currentMelody[time % currentMelody.length];
+            time++;
+        }//end while.
+        
+        if(newMelody.includes(m)) {
+            if(answerTime < time) {
+                answer = split[2];
+                answerTime = time;
+            }
+        }//end if.
+
+    }//end for1.
+    
+    return answer;
+}//end solution.
