@@ -1,0 +1,24 @@
+function solution(board) {
+    let length = 0;
+    
+    const row = board.length;
+    const col = board[0].length;
+    
+    const dpArray = Array.from({length : row+1 }, () => new Array(col+1).fill(0));
+
+    for(let i=1; i<=row; i++) {
+        for(let j=1; j<=col; j++) {
+            if(board[i-1][j-1] === 1) {
+                const left = dpArray[i-1][j];
+                const up = dpArray[i][j-1];
+                const diagonal = dpArray[i-1][j-1];
+                
+                const minValue = Math.min(left, up, diagonal);      
+                dpArray[i][j] = minValue + 1;
+                length = Math.max(length, dpArray[i][j]);
+            }
+        }//end for2.
+    }//end for1.
+   
+    return length * length;
+}//end solution.
