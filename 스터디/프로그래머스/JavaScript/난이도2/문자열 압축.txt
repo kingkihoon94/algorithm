@@ -1,0 +1,39 @@
+function solution(s) {
+    let answer = s.length;
+    
+    for(let i=1; i<=s.length / 2; i++) {
+        
+        let answerString = "";
+        let startString = s.substr(0,i);
+        let startCnt = 1;
+        
+        const sectionCnt = Math.ceil(s.length / i);
+        
+        for(let j=2; j<=sectionCnt; j++) {
+            const currentString = s.substr((i*(j-1)), i);
+            if(currentString === startString) {
+                startCnt++;
+            } else {
+                if(startCnt === 1) {
+                    answerString += startString;
+                } else {
+                    answerString += startCnt + startString;
+                }
+                startString = currentString;
+                startCnt = 1;
+            }//end if else.
+        }//end for2.
+        
+        if(startCnt === 1) {
+            answerString += startString;
+        } else {
+            answerString += startCnt + startString;
+        }
+ 
+        answer = Math.min(answer, answerString.length);
+        
+        
+    }//end for1.
+    
+    return answer;
+}//end solution.
