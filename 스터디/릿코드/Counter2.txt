@@ -1,0 +1,33 @@
+type Counter = {
+    increment: () => number,
+    decrement: () => number,
+    reset: () => number,
+}
+
+function createCounter(init: number): Counter {
+
+    const initialCount = init;
+    let currentCount = init;
+
+    const increment = function () {
+        return ++currentCount;
+    };
+
+    const decrement = function () {
+        return --currentCount;
+    };
+
+    const reset = function () {
+        return currentCount = initialCount;
+    };
+
+
+    return {increment, decrement, reset};
+};
+
+/**
+ * const counter = createCounter(5)
+ * counter.increment(); // 6
+ * counter.reset(); // 5
+ * counter.decrement(); // 4
+ */

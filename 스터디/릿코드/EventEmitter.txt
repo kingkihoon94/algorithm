@@ -1,0 +1,58 @@
+type Callback = (...args: any[]) => any;
+type Subscription = {
+    unsubscribe: () => void
+}
+
+class EventEmitter {
+    
+    map: Map<string, Callback[]>;
+
+    constructor() {
+        this.map = new Map();
+    }
+
+    subscribe(eventName: string, callback: Callback): Subscription {
+
+        if(this.map.has(eventName)) {
+            const callbackList = this.map.get(eventName);
+            this.map.set(eventName, [...callbackList, callback]);
+        } else {
+            this.map.set(eventName, [callback]);
+        }//end if-else.
+        
+        return {
+            unsubscribe: () => {
+                const callbackList = this.map.get(eventName);
+                const filteredList = callbackList.filter((cb) => cb !== callback);
+                this.map.set(eventName, filteredList);
+            }
+        };
+    }//end subscribe.
+    
+    emit(eventName: string, args: any[] = []): any[] {
+        let output = [];
+
+        if(this.map.has(eventName)) {
+            const callbackList = this.map.get(eventName);
+
+            for(const cb of callbackList) {
+                output.push(cb(...args));
+            }//end for1.
+
+        }//end if.
+
+        return output;
+    }//end emit.
+}//end Class EventEmitter.
+
+/**
+ * const emitter = new EventEmitter();
+ *
+ * // Subscribe to the onClick event with onClickCallback
+ * function onClickCallback() { return 99 }
+ * const sub = emitter.subscribe('onClick', onClickCallback);
+ *
+ * emitter.emit('onClick'); // [99]
+ * sub.unsubscribe(); // undefined
+ * emitter.emit('onClick'); // []
+ */
