@@ -1,0 +1,30 @@
+type Fn = (...params: number[]) => number
+
+function memoize(fn: Fn): Fn {
+
+    const inputMap = new Map();
+    
+    return function(...args) {
+        const key = JSON.stringify(args);
+        if(inputMap.has(key)) {
+            const cache = inputMap.get(key);
+            return cache;
+        } else {
+            const value = fn(...args);
+            inputMap.set(key, value);
+            return value;
+        }
+    }//end return.
+}//end memoize.
+
+
+/** 
+ * let callCount = 0;
+ * const memoizedFn = memoize(function (a, b) {
+ *	 callCount += 1;
+ *   return a + b;
+ * })
+ * memoizedFn(2, 3) // 5
+ * memoizedFn(2, 3) // 5
+ * console.log(callCount) // 1 
+ */
