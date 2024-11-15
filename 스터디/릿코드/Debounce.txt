@@ -1,0 +1,30 @@
+/**
+ * @param {Function} fn
+ * @param {number} t milliseconds
+ * @return {Function}
+ */
+var debounce = function(fn, t) {
+
+    let timeout;
+    
+    // ...args = 'Hello'
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => { fn(...args) }, t);
+    }
+};
+
+// t = 50
+
+// 50 , 200
+// 100, 250
+
+// 50, 60, 70
+// 120
+
+/**
+ * const log = debounce(console.log, 100);
+ * log('Hello'); // cancelled
+ * log('Hello'); // cancelled
+ * log('Hello'); // Logged at t=100ms
+ */
