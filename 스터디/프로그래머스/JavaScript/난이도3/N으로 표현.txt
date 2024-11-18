@@ -1,0 +1,28 @@
+function solution(N, number) {
+    
+    const dp = Array.from({length: 9}, () => new Set());
+    
+    for(let i=1; i<=8; i++) {
+        const repeatNum =  N.toString().repeat(i);
+        dp[i].add(parseInt(repeatNum)); // 예외 케이스 추가.
+        
+        for(let l=1; l<i; l++) {
+            const r = i-l;
+            
+            for(const lValue of dp[l].values()) {
+                for(const rValue of dp[r].values()) {
+                    dp[i].add(lValue + rValue);
+                    dp[i].add(lValue - rValue);
+                    dp[i].add(lValue * rValue);
+                    if(rValue !== 0) dp[i].add(Math.floor(lValue / rValue));
+                }//end for4.
+            }//end for3.
+            
+        }// end for2.
+        
+        if(dp[i].has(number)) return i;
+        
+    }//end for1.
+    
+    return -1;
+}//end solution.
