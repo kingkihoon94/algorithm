@@ -1,0 +1,24 @@
+/**
+ * @param {*} obj
+ * @param {*} classFunction
+ * @return {boolean}
+ */
+var checkIfInstanceOf = function(obj, classFunction) {
+
+    // 예외처리 1. obj 값 이상할 경우.
+    if(obj === null || obj === undefined) return false;
+
+    // 예외처리 2. classFunction 값 이상할 경우.
+    if(typeof classFunction !== 'function') return false;
+
+    // primitive 값 객체 래핑.
+    if(typeof obj !== 'object' && typeof obj !== 'function') {
+        obj = Object(obj);
+    }
+
+    return obj instanceof classFunction;
+};
+
+/**
+ * checkIfInstanceOf(new Date(), Date); // true
+ */
