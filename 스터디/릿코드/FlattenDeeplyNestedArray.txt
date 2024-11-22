@@ -1,0 +1,22 @@
+/**
+ * @param {Array} arr
+ * @param {number} depth
+ * @return {Array}
+ */
+var flat = function (arr, n) {
+    if(n === 0) return arr;
+
+    let flattedArray = [];
+
+    for(let i=0; i<arr.length; i++) {
+        // 배열내 원소 값 - that contains integers or other multi-dimensional arrays.
+        if(typeof(arr[i]) === 'number') {
+            flattedArray.push(arr[i]);
+        } else {
+            flattedArray.push(...flat(arr[i], n-1));
+            // flattedArray = flattedArray.concat(flag(arr[i], n-1)); 은 왜 시간 초과가 나는가?
+        }
+    }//end for1.
+
+    return flattedArray;
+};
