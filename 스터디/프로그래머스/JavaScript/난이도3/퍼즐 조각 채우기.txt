@@ -1,0 +1,107 @@
+const filter = (array) => {
+    const minX = Math.min(...array.map((point) => point[0]));
+    const minY = Math.min(...array.map((point) => point[1]));
+    return array.map((point) => [point[0]-minX, point[1]-minY]).sort();
+}//end filter function.
+
+const rotate = (array) => {
+    let candidates = [];
+    
+    let current = [...array];
+    let height = Math.max(...array.map((point) => point[0])) - Math.min(...array.map((point) => point[0]));
+    let width = Math.max(...array.map((point) => point[1])) - Math.min(...array.map((point) => point[1]));
+    
+    candidates.push([...current]);
+    for(let i=0; i<3; i++) {
+        const newArray = current.map((point) => [point[1], width - point[0]]);
+        const filteredNewArray = filter(newArray);
+        
+        current = [...filteredNewArray];
+        candidates.push([...current]);
+       
+        const temp = width;
+        width = height;
+        height = temp;
+    }//end for1.
+
+    return candidates.sort()[0];
+}//end rotate function.
+
+function solution(game_board, table) {
+    const direction = [[-1,0],[1,0],[0,-1],[0,1]];
+    const length = game_board.length;
+    
+    const gameBoardSet = new Set();
+    
+    const visited = Array.from({ length }, () => new Array(length).fill(false));
+    
+    for(let i=0; i<length; i++) {
+        for(let j=0; j<length; j++) {
+            if(game_board[i][j] === 0 && !visited[i][j]) {
+                const array = [];
+                const queue = [];
+                visited[i][j] = true;
+                queue.push([i,j]);
+                while(queue.length !== 0) {
+                    const point = queue.shift();
+                    array.push(point);
+                    for(let k=0; k<4; k++) {
+                        const nx = point[0] + direction[k][0];
+                        const ny = point[1] + direction[k][1];
+                        if(nx >= 0 && nx < length && ny >= 0 && ny < length && game_board[nx][ny] === 0 && !visited[nx][ny]) {
+                            visited[nx][ny] = true;
+                            queue.push([nx,ny]);
+                        }//end if.
+                    }//end for3.
+                }//end while.
+                
+                const filteredArray = filter(array);
+                console.log(filteredArray);
+                const rotatedArray = rotate(filteredArray);
+                gameBoardSet.add(rotatedArray);
+            }//end if.
+        }//end for2.
+    }//end for1.
+    
+    //console.log(gameBoardSet);
+    
+    const visited2 = Array.from({ length }, () => new Array(length).fill(false));
+    let answer = 0;
+    
+    for(let i=0; i<length; i++) {
+        for(let j=0; j<length; j++) {
+            if(table[i][j] === 1 && !visited2[i][j]) {
+                const array = [];
+                const queue = [];
+                visited2[i][j] = true;
+                queue.push([i,j]);
+                while(queue.length !== 0) {
+                    const point = queue.shift();
+                    array.push(point);
+                    for(let k=0; k<4; k++) {
+                        const nx = point[0] + direction[k][0];
+                        const ny = point[1] + direction[k][1];
+                        if(nx >= 0 && nx < length && ny >= 0 && ny < length && table[nx][ny] === 1 && !visited2[nx][ny]) {
+                            visited2[nx][ny] = true;
+                            queue.push([nx,ny]);
+                        }//end if.
+                    }//end for3.
+                }//end while.
+                const filteredArray = filter(array);
+                const rotatedArray = rotate(filteredArray);
+                const stringifyArray = JSON.stringify(rotatedArray);
+                
+                for(const value of gameBoardSet) {
+                    const stringifyValue = JSON.stringify(value);
+                    if(stringifyArray === stringifyValue) {
+                        answer += value.length;
+                        gameBoardSet.delete(value);
+                        break;
+                    }
+                }//end for2.
+            }
+        }//end for2.
+    }//end for1.
+    
+    return answer;
+}//end solution.
