@@ -1,0 +1,20 @@
+function solution(money) {
+    const length = money.length;
+
+    let dpArray = Array.from({length:2}, () => new Array(length+1).fill(0));
+    
+    dpArray[0][0] = 0; 
+    dpArray[0][1] = 0; 
+    
+    dpArray[1][0] = 0; 
+    dpArray[1][1] = money[0]; 
+    
+    for(let i=2; i<=length-1; i++) {
+        dpArray[0][i] = Math.max(dpArray[0][i-1] , dpArray[0][i-2] + money[i-1]);
+        dpArray[1][i] = Math.max(dpArray[1][i-1] , dpArray[1][i-2] + money[i-1]);
+    }//end for1.
+    
+    dpArray[0][length] = Math.max(dpArray[0][length-1] , dpArray[0][length-2] + money[length-1]);
+    
+    return Math.max(dpArray[0][length],dpArray[1][length-1]);
+}//end solution.
