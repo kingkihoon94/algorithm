@@ -1,0 +1,31 @@
+function solution(N, road, K) {
+    let edgeArray = Array.from({length: N+1} , () => []);
+    let costArray = new Array(N+1).fill(Number.MAX_SAFE_INTEGER);
+    costArray[1] = 0;
+
+    for(const el of road) {
+        const [v1, v2, cost] = el;
+        edgeArray[v1].push({next: v2, cost: cost});
+        edgeArray[v2].push({next: v1, cost: cost});
+    }//end for1.
+
+    const queue = [];
+    queue.push(1);
+    /// end init.
+
+    while(queue.length !== 0) {
+        const now = queue.shift();
+
+        for(const edge of edgeArray[now]) {
+            if(costArray[edge.next] > costArray[now] + edge.cost) {
+                costArray[edge.next] = costArray[now] + edge.cost;
+                queue.push(edge.next);
+            }//end if.
+        }//end for1.
+
+    }//end while. (dijkstra)
+
+    const filteredArray = costArray.filter((cost) => cost <= K);
+
+    return filteredArray.length;
+}//end solution.
