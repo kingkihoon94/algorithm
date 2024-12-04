@@ -1,0 +1,25 @@
+/**
+ * @param {Array} arr1
+ * @param {Array} arr2
+ * @return {Array}
+ */
+var join = function(arr1, arr2) {
+    
+    const obj = {};
+
+    arr1.forEach((el)=>{
+        obj[el.id] = el;
+    });//end forEach.
+
+    arr2.forEach((el)=>{
+        if(obj[el.id]){
+            for(const key in el){
+                obj[el.id][key] = el[key]; // 교체 및 추가 로직.
+            }
+        } else {
+            obj[el.id] = el;
+        }
+    });//end forEach.
+
+    return Object.values(obj);
+};
