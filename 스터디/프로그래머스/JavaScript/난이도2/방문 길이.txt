@@ -1,0 +1,32 @@
+function solution(dirs) {
+    const set = new Set();
+    
+    let currentX = 0;
+    let currentY = 0;
+    
+    for(let i=0; i<dirs.length; i++) {
+        const direction = dirs[i];
+        let newX = currentX;
+        let newY = currentY;
+        if(direction === 'U') {
+            newY++;
+        } else if(direction === 'D'){
+            newY--;
+        } else if(direction === 'R'){
+            newX++;
+        } else {
+            newX--;
+        }
+        
+        if(newX < -5 || newX > 5 || newY < -5 || newY > 5) continue; // 무시하는 케이스.
+        
+        const avgX = (currentX + newX ) / 2;
+        const avgY = (currentY + newY ) / 2;
+        const key = avgX + "," + avgY;
+        set.add(key);
+        currentX = newX;
+        currentY = newY;
+    }//end for1.
+    
+    return set.size;
+}//end solution.
