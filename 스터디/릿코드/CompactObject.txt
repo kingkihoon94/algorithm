@@ -1,0 +1,29 @@
+/**
+ * @param {Object|Array} obj
+ * @return {Object|Array}
+ */
+var compactObject = function(obj) {
+    if (obj === null) return false; // obj가 null이면 false 처리.
+    if (typeof obj !== 'object') {
+        return !obj ? false : obj;
+    } // 순수 값 비교 타이밍에 리턴 처리값.
+
+    if(Array.isArray(obj)){
+        const array = [];
+        for(const value of obj) {
+            const newValue = compactObject(value);
+            if(newValue) array.push(newValue);
+        }//end for1.
+
+        return array;
+    } else {
+        const object = {};
+        for(const key in obj) {
+            const newValue = compactObject(obj[key]);
+            if(newValue) object[key] = newValue;
+        }//end for1.
+        
+        return object; 
+    }//end if-else.
+
+};
