@@ -1,0 +1,35 @@
+function solution(info, edges) {
+    let answer = 0;
+
+    const edgeArray = Array.from({length: info.length}, () => []);
+
+    for(const edge of edges){
+        edgeArray[edge[0]].push(edge[1]);
+    }//end for1.
+
+    const dfs = (currentNode, sheep, wolf, array) => {
+        const copyArray = [...array];
+        const index = copyArray.indexOf(currentNode);
+
+        copyArray.splice(index,1);
+
+        info[currentNode] === 0 ? sheep++ : wolf++;
+
+        answer = Math.max(answer, sheep);
+
+        if(sheep === wolf) return;
+
+        for(const nextNode of edgeArray[currentNode]) {
+            copyArray.push(nextNode);
+        }//end for1.
+
+        for(const nextNode of copyArray) {
+            dfs(nextNode, sheep, wolf, copyArray);
+        }//end for1.
+
+    }//end dfs.
+
+    dfs(0,0,0,[0]);
+
+    return answer;
+}//end solution.
