@@ -1,0 +1,45 @@
+function solution(board, skill) {
+    const row = board.length;
+    const col = board[0].length;
+    
+    let sumArray = Array.from({length: row+1}, () => new Array(col+1).fill(0));
+    
+    for (const order of skill) {
+        let degree = order[5];
+        if(order[0] === 1) degree *= -1;
+        
+        const sx = order[1];
+        const sy = order[2];
+        const ex = order[3];
+        const ey = order[4];
+        
+        sumArray[sx][sy] += degree;
+        sumArray[ex+1][sy] -= degree;
+        sumArray[sx][ey+1] -= degree;
+        sumArray[ex+1][ey+1] += degree;
+    }//end for1.
+    
+    // 각 행별로 오른쪽 누적.
+    for(let i=0; i<=row; i++) {
+        for(let j=1; j<=col; j++) {
+            sumArray[i][j] += sumArray[i][j-1];
+        }//end for1.
+    }//end for2.
+    
+    // 각 열별로 밑으로 누적.
+    for(let i=1; i<=row; i++) {
+        for(let j=0; j<=col; j++) {
+            sumArray[i][j] += sumArray[i-1][j];
+        }//end for1.
+    }//end for2.
+    
+    let answer = 0;
+    
+    for(let i=0; i<row; i++){
+        for(let j=0; j<col; j++) {
+            if(board[i][j] + sumArray[i][j] > 0) answer++;
+        }
+    }
+    
+    return answer;
+}//end solution.
