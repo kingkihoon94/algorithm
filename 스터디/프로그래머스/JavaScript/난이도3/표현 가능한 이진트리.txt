@@ -1,0 +1,45 @@
+const checkTree = (str) => {
+    const length = str.length;
+    
+    if(length === 1) {
+        return 1;
+    } 
+    
+    const mid = Math.floor(length / 2);
+    
+    const midChar = str.charAt(mid);
+    
+    if(midChar === "0" && str.includes("1")) {
+        return 0;
+    }
+    
+    const lStr = str.slice(0,mid);
+    const rStr = str.slice(mid+1);
+    
+    return checkTree(lStr) * checkTree(rStr);
+}//end checkTree.
+
+function solution(numbers) {
+    let answer = [];
+    
+    for(const number of numbers) {
+        const binaryNumber = number.toString(2);
+        const length = binaryNumber.length;
+        
+        let height = 1;
+        
+        while ((Math.pow(2,height) - 1) < length) {
+            height++;
+        }
+        
+        const length2 = Math.pow(2,height) - 1;
+        const zeroCnt = length2 - length;
+       
+        const zeroAddedStr = '0'.repeat(zeroCnt) + binaryNumber;
+        
+        answer.push(checkTree(zeroAddedStr));
+    }//end for1.
+    
+    
+    return answer;
+}//end solution.
