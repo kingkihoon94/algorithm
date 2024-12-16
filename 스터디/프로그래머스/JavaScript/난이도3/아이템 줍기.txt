@@ -1,0 +1,63 @@
+const checkPoint = (rect, x , y) => {
+    if (x > rect[0] && x < rect[2] && y > rect[1] && y < rect[3]) {
+        return -1;
+    } else if (
+        (x === rect[0] || x === rect[2]) && (y >= rect[1] && y <= rect[3]) ||
+        (y === rect[1] || y === rect[3]) && (x >= rect[0] && x <= rect[2])
+    ) {
+        return 0; 
+    } else {
+        return 1;
+    }
+}
+
+function solution(rectangle, characterX, characterY, itemX, itemY) {
+    const newRectangle = [];
+    rectangle.forEach((rect)=> {
+        const array = [];
+        rect.forEach((el) => array.push(el*2));
+        newRectangle.push(array);
+    });
+
+    const direction = [[-1,0],[1,0],[0,-1],[0,1]];
+    let visited = Array.from({length: 101} , () => new Array(101).fill(false));
+    
+    const queue = [];
+    
+    queue.push([characterX*2,characterY*2]);
+    visited[characterX*2][characterY*2] = true;
+
+    let answer = 0;
+    
+    while(queue.length !== 0) {
+        const size = queue.length;
+        
+        for(let i=0; i<size; i++) {
+            const currentPoint = queue.shift();
+            
+            if(currentPoint[0] === (itemX * 2) && currentPoint[1] === (itemY * 2)){
+                return answer / 2;
+            }
+        
+            for(let k=0; k<4; k++){
+                const nx = currentPoint[0] + direction[k][0];
+                const ny = currentPoint[1] + direction[k][1];
+                if(nx>=1 && nx<=100 && ny>=1 && ny<=100 && !visited[nx][ny]) {
+                    const array = [];
+                    for(const rect of newRectangle) {
+                        array.push(checkPoint(rect,nx,ny));
+                    }//end for3
+                    
+                    if(array.includes(0) && !array.includes(-1)) {
+                        visited[nx][ny] = true;
+                        queue.push([nx,ny]);
+                    }
+                }
+            }//end for2.   
+        }//end for1.
+        
+        answer++;
+    }//end while.
+    
+    return -1;
+}
