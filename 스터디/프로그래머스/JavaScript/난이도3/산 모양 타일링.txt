@@ -1,0 +1,29 @@
+function solution(n, tops) {
+    // 윗변 n , 아랫변 n+1 사다리꼴.
+    // 일부 위쪽변에 정삼각형 추가.
+    // 나누는 수 10007
+
+    const MOD = 10007;
+
+    const dpArray = Array.from({length: n+1}, () => new Array(2).fill(0));
+
+    dpArray[0][0] = 0; // 삼각형 1개일때 맨 오른쪽 하단 삼각형이 마름모만드는데 사용되었을 경우.
+    dpArray[0][1] = 1; // 삼각형 1개일때 맨 오른쪽 하단 삼각형이 독립적인 삼각형인 경우.
+
+    for(let i=1; i<=n; i++) {
+        dpArray[i][0] = dpArray[i-1][0] + dpArray[i-1][1]; // 마지막 삼각형이 마름모에 사용되었을 경우.
+
+        const top = tops[i-1];
+
+        if(top === 0) {
+            // 위에 추가 삼각형이 없는 경우.
+            dpArray[i][1] = (dpArray[i-1][0] + 2 * dpArray[i-1][1]) % MOD;
+        } else {
+            // 위에 추가 삼각형이 있는 경우.
+            dpArray[i][1] = (2 * dpArray[i-1][0] + 3 * dpArray[i-1][1]) % MOD;
+        }
+    }//end for1.
+
+
+    return (dpArray[n][0] + dpArray[n][1]) % MOD;
+}//end solution.
