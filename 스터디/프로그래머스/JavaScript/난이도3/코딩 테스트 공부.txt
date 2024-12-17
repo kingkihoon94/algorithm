@@ -1,0 +1,34 @@
+function solution(alp, cop, problems) {
+    
+    // dpArray[i][j] -> 알고력 i , 코딩력 j 를 만드는데 필요한 최소 시간.
+    let dpArray = Array.from({length: 152}, () => new Array(152).fill(100001));
+    dpArray[alp][cop] = 0; // 알고력 초기값 alp , 코딩력 초기값 cop 을 만드는데 필요한 시간 0.
+    
+    let aMax = alp; // 0으로 두면 반례 생김.
+    let bMax = cop; // 0으로 두면 반례 생김.
+
+    for(const [aReq, bReq, aRew, bRew, cost] of problems) {
+        aMax = Math.max(aMax, aReq);
+        bMax = Math.max(bMax, bReq);
+    }//end for1.
+    
+    for(let i=alp; i<=aMax; i++) {
+        for(let j=cop; j<=bMax; j++) {
+            for(const [aReq, bReq, aRew, bRew, cost] of problems) {
+                if(aReq > i || bReq > j) continue;
+                
+                const nextA = Math.min(aMax, i+aRew);
+                const nextB = Math.min(bMax, j+bRew);
+                
+                dpArray[nextA][nextB] = Math.min(dpArray[nextA][nextB], dpArray[i][j] + cost);
+                
+            }//end for3.
+            
+            dpArray[i+1][j] = Math.min(dpArray[i+1][j], dpArray[i][j] + 1); 
+            dpArray[i][j+1] = Math.min(dpArray[i][j+1], dpArray[i][j] + 1);
+        }//end for2.
+    }//end for1.
+
+    
+    return dpArray[aMax][bMax];
+}//end solution.
