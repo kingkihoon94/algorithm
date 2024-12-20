@@ -1,0 +1,94 @@
+function solution(dice) {
+    let answer = [];
+    let winCount = 0;
+    let count = dice.length;
+    
+    let array1 = [];
+    let array2 = [];
+    
+    let sumMap1 = new Map();
+    let sumMap2 = new Map();
+    
+    
+    const getSum1 = (index, currentSum) => {
+        if(index === (count/2)) {
+            if(!sumMap1.has(currentSum)) {
+                sumMap1.set(currentSum,1);
+            } else {
+                sumMap1.set(currentSum, sumMap1.get(currentSum) + 1);
+            }
+            return;
+        }
+        
+        const currentDice = array1[index];
+        for(let k=0; k<6; k++) {
+            getSum1(index + 1, currentSum + currentDice[k]);
+        }
+    }//end getSum1.
+    
+    const getSum2 = (index, currentSum) => {
+        if(index === (count/2)) {
+            if(!sumMap2.has(currentSum)) {
+                sumMap2.set(currentSum,1);
+            } else {
+                sumMap2.set(currentSum, sumMap2.get(currentSum) + 1);
+            }
+            return;
+        }
+        
+        const currentDice = array2[index];
+        for(let k=0; k<6; k++) {
+            getSum2(index + 1, currentSum + currentDice[k]);
+        }
+    }//end getSum2.
+    
+    const simulation = (diceArray) => {
+        array1 = [];
+        array2 = [];
+        sumMap1 = new Map();
+        sumMap2 = new Map();
+        dice.forEach((el,index) => diceArray.includes(index) ? array1.push(el) : array2.push(el));
+        
+        getSum1(0,0);
+        getSum2(0,0);
+        
+        const sortedKey1 = [...sumMap1.keys()].sort((a, b) => a - b);
+        const sortedKey2 = [...sumMap2.keys()].sort((a, b) => a - b);
+        
+        let currentWinCount = 0;
+        
+        for(let i=0; i<sortedKey1.length; i++) {
+            const key1 = sortedKey1[i];
+            for(let j=0; j<sortedKey2.length; j++) {
+                const key2 = sortedKey2[j];
+                if(key1 <= key2) break;
+                const count1 = sumMap1.get(key1);
+                const count2 = sumMap2.get(key2);
+                currentWinCount += sumMap1.get(key1) * sumMap2.get(key2);
+            }//end for2.
+        }//end for1.
+        
+        if(currentWinCount > winCount) { 
+            winCount = currentWinCount;
+            answer = diceArray.map((el) => el+1);
+        }
+        
+    }//end simulation.
+    
+    const combination = (index, array) => {
+        if(array.length === (count / 2)){
+            simulation([...array]);
+            return;
+        }
+        
+        for(let i=index; i<count; i++) {
+            array.push(i);
+            combination(i+1, [...array]);
+            array.pop();
+        }
+    }//end combination.
+    
+    combination(0,[]);
+
+    return answer;
+}//end solution.
